@@ -1,7 +1,7 @@
 {
 	"name": "maddies-custom-news-feed",
 	"version": "0.0.1",
-  "description": "A custom news feed to get myself and my family to stop reason jeff bezos propaganda",
+	"description": "A custom news feed to get myself and my family to stop reason jeff bezos propaganda",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -29,6 +29,7 @@
 		"prettier": "^3.3.2",
 		"prettier-plugin-svelte": "^3.2.6",
 		"prettier-plugin-tailwindcss": "^0.6.5",
+		"rss-parser": "^3.13.0",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"tailwindcss": "^3.4.9",
