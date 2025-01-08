@@ -1,0 +1,1 @@
+Cloned from https://github.com/eaiti/eai-sveltekit-starter
