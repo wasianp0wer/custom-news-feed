@@ -13,5 +13,6 @@
     console.log(data.story);
   });
 </script>
-
+<h1>{data.title}</h1>
+<h3>{data.author}</h3>
 <div>{@html data.story}</div>

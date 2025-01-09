@@ -1,16 +1,27 @@
 import { fail } from '@sveltejs/kit';
 import { Game } from './game';
 import type { PageServerLoad, Actions } from './$types';
-import Parser from 'rss-parser';
+import { XMLParser, XMLBuilder, XMLValidator } from "fast-xml-parser";
+
+type GuardianFeed = {
+  media: string;
+};
 
 export const load = (async ({ cookies }) => {
-  const parser = new Parser();
-  const feed = await parser.parseURL('https://www.propublica.org/feeds/propublica/main');
-  console.log(feed.items[0].content);
-  
+  const xmlOptions = {
+    ignoreAttributes: false,
+    attributeNamePrefix: '',
+    transformTagName: (tagName: string) => tagName.replace(/:/g, '_')
+  }
+  const parser = new XMLParser(xmlOptions);
+  const response = await fetch('https://www.theguardian.com/us/commentisfree/rss')
+  const feed = parser.parse(response.text());
+  console.log(feed);
 
 	return {
-    story: feed.items[0].content,
+    story: feed!.item[0].contentSnippet,
+    title: feed!.item[0].title,
+    author: feed!.item[0].creator,
 	};
 }) satisfies PageServerLoad;
 

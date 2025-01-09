@@ -35,13 +35,13 @@ body {
 
 h1,
 h2,
-p {
+/* p {
 	font-weight: 400;
 }
 
 p {
 	line-height: 1.5;
-}
+} */
 
 a {
 	color: var(--color-theme-1);
