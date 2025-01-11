@@ -5,8 +5,11 @@ export class RssParser {
 		ignoreAttributes: false,
 		attributeNamePrefix: '',
 		transformTagName: (tagName: string) => {
-			if (['item'].includes(tagName)) {
+			if (tagName === 'item') {
 				return 'items';
+			}
+			if (tagName === 'category') {
+				return 'categories';
 			}
 			return tagName.replace(/:/g, '_');
 		}
@@ -80,6 +83,7 @@ export class RssParser {
 			for (const media of item.media_content) {
 				const existing = newMediaContent.find((m) => m.url.split('?')[0] === media.url.split('?')[0]);
 				if (existing) {
+					console.log(existing.width, media.width);
 					if (existing.width >= media.width) {
 						continue;
 					} else {
@@ -89,8 +93,10 @@ export class RssParser {
 				media.width = parseInt(media.width as any);
 				newMediaContent.push(media);
 			}
+			console.log(newMediaContent);
 			item.media_content = newMediaContent;
 			item.source = RssSource.GUARDIAN;
+			item.categories = item.categories.map((c) => (c as any)['#text']);
 		});
 	}
 }

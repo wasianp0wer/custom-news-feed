@@ -13,9 +13,12 @@
 	--color-theme-2: #4d4d4d; /* Dark gray */
 	--color-theme-3: #DDEDF8; /* Light blue accent */
 	--color-theme-4: #F06543; /* Salmon accent */
+	--color-theme-5: #003366; /* Salmon accent */
 	--color-text: rgba(0, 0, 0, 0.85);
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
+	--story-grow-factor: 1.04;
+	--top-story-grow-factor: 1.02;
 	font-family: var(--font-body);
 	color: var(--color-text);
 }
