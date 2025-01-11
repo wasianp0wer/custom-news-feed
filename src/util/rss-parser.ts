@@ -12,15 +12,18 @@ export class RssParser {
 		}
 	};
 	xmlParser: XMLParser;
+	itemArrayFields = ['media_content', 'categories'];
 
 	constructor() {
 		this.xmlParser = new XMLParser(this.xmlOptions);
 	}
 
-	parse(rawXml: string) {
+	parse(rawXml: string): RssPage {
 		console.log(this.xmlParser.parse(rawXml));
-		const xml = this.xmlParser.parse(rawXml).rss.channel as RssPage;
-		this.transformGuardianXml(xml);
+		const xml = this.xmlParser.parse(rawXml).rss.channel;
+		this.checkArrayFields(xml);
+		this.transformToConsistentFormat(xml);
+		this.validate(xml);
 		return xml;
 	}
 
@@ -29,19 +32,57 @@ export class RssParser {
 		return this.parse(rawXml);
 	}
 
+	checkArrayFields(xml: RssPage) {
+		if (!Array.isArray(xml.items)) {
+			xml.items = [xml.items];
+		}
+		for (const item of xml.items) {
+			for (const field of this.itemArrayFields) {
+				if (!Array.isArray((item as any)[field])) {
+					(item as any)[field] = [(item as any)[field]];
+				}
+			}
+		}
+	}
+
+	transformToConsistentFormat(xml: any) {
+		console.log(Object.keys(xml));
+		switch (xml.title) {
+			case 'The Guardian':
+				this.transformGuardianXml(xml);
+				break;
+			case 'The 51st':
+				this.transformFiftyFirstXml(xml);
+				break;
+		}
+		this.transformFiftyFirstXml(xml);
+	}
+
+	validate(xml: RssPage) {
+		for (let item of xml.items) {
+			item.description = item.description.trim();
+			if (!item.description.endsWith('.')) {
+				item.description += '.';
+			}
+		}
+	}
+
+	transformFiftyFirstXml(xml: RssPage) {
+		for (let item of xml.items) {
+			item.source = RssSource.FIFTYFIRST;
+		}
+	}
+
 	transformGuardianXml(xml: RssPage) {
 		xml.items.forEach((item: RssItem) => {
-			item.shortDescription = item.description.split('<p>')[1].split('</p>')[0];
+			item.description = item.description.split('<p>')[1].split('</p>')[0];
 			const newMediaContent: MediaContent[] = [];
 			for (const media of item.media_content) {
 				const existing = newMediaContent.find((m) => m.url.split('?')[0] === media.url.split('?')[0]);
-				console.log('existing', existing);
 				if (existing) {
 					if (existing.width >= media.width) {
-						console.log('skipping');
 						continue;
 					} else {
-						console.log('replacing');
 						newMediaContent.splice(newMediaContent.indexOf(existing), 1);
 					}
 				}
@@ -49,6 +90,7 @@ export class RssParser {
 				newMediaContent.push(media);
 			}
 			item.media_content = newMediaContent;
+			item.source = RssSource.GUARDIAN;
 		});
 	}
 }
@@ -64,7 +106,6 @@ export interface RssItem {
 	item_id: string;
 	title: string;
 	description: string;
-	shortDescription: string;
 	link: string;
 	pubDate: Date;
 	guid: string;
@@ -72,6 +113,7 @@ export interface RssItem {
 	media_content: MediaContent[];
 	content: string;
 	categories: string[];
+	source: RssSource;
 }
 
 export interface MediaContent {
@@ -81,5 +123,6 @@ export interface MediaContent {
 }
 
 export enum RssSource {
-	GUARDIAN
+	GUARDIAN = 'The Guardian',
+	FIFTYFIRST = 'The 51st'
 }
