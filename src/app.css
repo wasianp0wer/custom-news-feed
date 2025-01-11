@@ -11,6 +11,8 @@
 	--color-bg-2: #e5e5e5;
 	--color-theme-1: #001f3f; /* Dark blue accent */
 	--color-theme-2: #4d4d4d; /* Dark gray */
+	--color-theme-3: #DDEDF8; /* Light blue accent */
+	--color-theme-4: #F06543; /* Salmon accent */
 	--color-text: rgba(0, 0, 0, 0.85);
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
