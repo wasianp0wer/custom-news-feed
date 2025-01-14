@@ -2,6 +2,7 @@
 	import type { RssItem } from '../util/rss-parser';
 	import { StoryUtil } from '../util/story-util';
 	import ByLine from './ByLine.svelte';
+	import Dateline from './Dateline.svelte';
 
 	interface Props {
 		item: RssItem;
@@ -9,11 +10,14 @@
 	}
 
 	let { item, nextThree }: Props = $props();
+
+	let mainCategory = $derived.by(() => item.categories[0]);
 </script>
 
 <div class="first story">
+	<div class="redlabel"><a class="redlabel-text" href="/category/{mainCategory}">{mainCategory}</a></div>
 	<h1><a href="/story/{item.item_id}">{item.title}</a></h1>
-	<ByLine creator={item.dc_creator} />
+	<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} />
 
 	<div class="content">
 		<img src={item.media_content[0].url} alt="sorry" style="width: {item.media_content[0].width}px" />
@@ -21,7 +25,7 @@
 		<div class="description">
 			<div>
 				{@html item.description}
-				<a class="continue" href="/story/{item.item_id}">Continue reading...</a>
+				<!-- <a class="continue" href="/story/{item.item_id}">Continue reading...</a> -->
 			</div>
 			{#each nextThree as next}
 				<hr />
@@ -33,6 +37,26 @@
 </div>
 
 <style>
+	.redlabel {
+		color: #fff;
+		background-color: var(--color-breaking);
+		font-size: 0.9rem;
+		font-weight: bold;
+		text-transform: uppercase;
+		padding: 3px 8px;
+		border-radius: 4px;
+		display: inline-block;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		transition:
+			background-color 0.3s ease,
+			transform 0.2s ease;
+		width: fit-content; /* Only take up as much space as the text requires */
+	}
+
+	.redlabel-text {
+		color: var(--color-bg-1);
+	}
+
 	.first {
 		grid-column: span 3;
 		background-color: #f9f9f9;
@@ -47,17 +71,20 @@
 		border: 1px solid #ddd;
 		border-radius: 8px;
 		background-color: #fff;
-		transition: transform 0.3s ease-in-out;
+		transition:
+			transform 0.3s ease-in-out,
+			border 0.3s ease-in-out;
 		height: 100%;
 	}
 
 	.story:hover {
 		transform: scale(var(--top-story-grow-factor));
+		border: 2px solid var(--color-theme-1);
 	}
 
 	.story h2 a {
 		text-decoration: none;
-		color: #333;
+		/* color: #333; */
 		font-size: 1.4rem;
 		font-weight: bold;
 	}

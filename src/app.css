@@ -14,6 +14,7 @@
 	--color-theme-3: #DDEDF8; /* Light blue accent */
 	--color-theme-4: #F06543; /* Salmon accent */
 	--color-theme-5: #003366; /* Salmon accent */
+  --color-breaking: #d62839;
 	--color-text: rgba(0, 0, 0, 0.85);
 	--column-width: 42rem;
 	--column-margin-top: 4rem;

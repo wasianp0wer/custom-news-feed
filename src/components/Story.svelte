@@ -2,6 +2,7 @@
 	import type { RssItem } from '../util/rss-parser';
 	import { StoryUtil } from '../util/story-util';
 	import ByLine from './ByLine.svelte';
+	import Dateline from './Dateline.svelte';
 
 	interface Props {
 		item: RssItem;
@@ -13,12 +14,12 @@
 <div class="story">
 	<div class="headline"><h2><a href="/story/{item.item_id}">{item.title}</a></h2></div>
 	<!-- TODO: Need to be able to click anywhere in the headline to go -->
-	<ByLine creator={item.dc_creator} />
+	<ByLine creator={item.dc_creator} publishedAt={item.pubDate} />
 	{#each item.media_content as media}
 		<img src={media.url} width={media.width} alt="sorry" />
 	{/each}
-	<div>{@html item.description}</div>
-	<a class="continue" href="/story/{item.item_id}">Continue reading...</a>
+	<div class="description">{@html item.description}</div>
+	<!-- <a class="continue" href="/story/{item.item_id}">Continue reading...</a> -->
 	<small>Source: {item.source}</small>
 </div>
 
@@ -31,12 +32,15 @@
 		border: 1px solid #ddd;
 		border-radius: 8px;
 		background-color: #fff;
-		transition: transform 0.3s ease-in-out;
+		transition:
+			transform 0.3s ease-in-out,
+			border 0.3s ease-in-out;
 		height: 100%;
 	}
 
 	.story:hover {
 		transform: scale(var(--story-grow-factor));
+		border: 2px solid var(--color-theme-1);
 	}
 
 	.headline {
@@ -85,5 +89,9 @@
 		margin-top: auto; /* Pushes the small text to the bottom */
 		font-size: 0.8rem;
 		color: #777;
+	}
+
+	.description {
+		margin-bottom: 6px;
 	}
 </style>

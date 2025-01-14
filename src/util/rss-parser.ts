@@ -22,7 +22,6 @@ export class RssParser {
 	}
 
 	parse(rawXml: string): RssPage {
-		console.log(this.xmlParser.parse(rawXml));
 		const xml = this.xmlParser.parse(rawXml).rss.channel;
 		this.checkArrayFields(xml);
 		this.transformToConsistentFormat(xml);
@@ -50,15 +49,16 @@ export class RssParser {
 
 	transformToConsistentFormat(xml: any) {
 		console.log(Object.keys(xml));
+		console.log(xml.title);
 		switch (xml.title) {
 			case 'The Guardian':
+			case 'Opinion | The Guardian':
 				this.transformGuardianXml(xml);
 				break;
 			case 'The 51st':
 				this.transformFiftyFirstXml(xml);
 				break;
 		}
-		this.transformFiftyFirstXml(xml);
 	}
 
 	validate(xml: RssPage) {
@@ -67,23 +67,27 @@ export class RssParser {
 			if (!item.description.endsWith('.')) {
 				item.description += '.';
 			}
+			if (!((item.pubDate as any) instanceof Date)) {
+				item.pubDate = new Date(item.pubDate);
+			}
 		}
 	}
 
 	transformFiftyFirstXml(xml: RssPage) {
+		console.log('hi');
 		for (let item of xml.items) {
 			item.source = RssSource.FIFTYFIRST;
 		}
 	}
 
 	transformGuardianXml(xml: RssPage) {
+		console.log('what');
 		xml.items.forEach((item: RssItem) => {
 			item.description = item.description.split('<p>')[1].split('</p>')[0];
 			const newMediaContent: MediaContent[] = [];
 			for (const media of item.media_content) {
 				const existing = newMediaContent.find((m) => m.url.split('?')[0] === media.url.split('?')[0]);
 				if (existing) {
-					console.log(existing.width, media.width);
 					if (existing.width >= media.width) {
 						continue;
 					} else {
@@ -93,7 +97,6 @@ export class RssParser {
 				media.width = parseInt(media.width as any);
 				newMediaContent.push(media);
 			}
-			console.log(newMediaContent);
 			item.media_content = newMediaContent;
 			item.source = RssSource.GUARDIAN;
 			item.categories = item.categories.map((c) => (c as any)['#text']);

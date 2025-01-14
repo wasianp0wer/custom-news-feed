@@ -9,9 +9,13 @@ type GuardianFeed = {
 
 export const load = (async ({ cookies }) => {
 	const parser = new RssParser();
-	const feed = await parser.parseUrl('https://www.theguardian.com/us/rss');
+	const newsFeed = await parser.parseUrl('https://www.theguardian.com/us/rss');
+	const localFeed = await parser.parseUrl('https://51st.news/rss/');
+	const opinionFeed = await parser.parseUrl('https://www.theguardian.com/us/commentisfree/rss');
 	return {
-		items: feed.items
+		newsItems: newsFeed.items,
+		localItems: localFeed.items,
+		opinionItems: opinionFeed.items
 	};
 }) satisfies PageServerLoad;
 
