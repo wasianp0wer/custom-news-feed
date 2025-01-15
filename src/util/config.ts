@@ -3,4 +3,6 @@ export interface LayoutConfig {
 	localStoryRows: number;
 	opinionCount: number;
 	latestCount: number;
+	investigationRows: number;
+	styleRows: number;
 }

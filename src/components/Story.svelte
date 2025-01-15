@@ -6,18 +6,26 @@
 
 	interface Props {
 		item: RssItem;
+		highlightTimeIfBreaking?: boolean;
 	}
 
-	let { item }: Props = $props();
+	let { item, highlightTimeIfBreaking = false }: Props = $props();
+
+	let thumbnail = $derived.by(() => {
+		if (item.media_content.length > 0) {
+			return item.media_content[0];
+		}
+		return undefined;
+	});
 </script>
 
 <div class="story">
-	<div class="headline"><h2><a href="/story/{item.item_id}">{item.title}</a></h2></div>
+	<div class="headline"><h2><a href={item.link} target="_blank">{@html item.title}</a></h2></div>
 	<!-- TODO: Need to be able to click anywhere in the headline to go -->
-	<ByLine creator={item.dc_creator} publishedAt={item.pubDate} />
-	{#each item.media_content as media}
-		<img src={media.url} width={media.width} alt="sorry" />
-	{/each}
+	<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={highlightTimeIfBreaking} />
+	{#if thumbnail}
+		<img src={thumbnail.url} width={thumbnail.width} alt="sorry" />
+	{/if}
 	<div class="description">{@html item.description}</div>
 	<!-- <a class="continue" href="/story/{item.item_id}">Continue reading...</a> -->
 	<small>Source: {item.source}</small>

@@ -6,15 +6,16 @@
 		creator: string;
 		publishedAt?: Date;
 		showBreakingTime?: boolean;
+		breakingMinutes?: number;
 	}
 
-	let { creator, publishedAt, showBreakingTime = false }: Props = $props();
+	let { creator, publishedAt, showBreakingTime = false, breakingMinutes }: Props = $props();
 </script>
 
 <small>
 	{StoryUtil.byLinePrefix(creator)}
 	{creator}
 	{#if publishedAt}
-		• <Dateline {publishedAt} showBreaking={showBreakingTime} />
+		• <Dateline {publishedAt} breakingMinutes={showBreakingTime ? (breakingMinutes ?? 30) : undefined} />
 	{/if}
 </small>

@@ -12,16 +12,25 @@
 	let { item, nextThree }: Props = $props();
 
 	let mainCategory = $derived.by(() => item.categories[0]);
+
+	let thumbnail = $derived.by(() => {
+		if (item.media_content.length > 0) {
+			return item.media_content[0];
+		}
+		return undefined;
+	});
 </script>
 
 <div class="first story">
 	<div class="redlabel"><a class="redlabel-text" href="/category/{mainCategory}">{mainCategory}</a></div>
-	<h1><a href="/story/{item.item_id}">{item.title}</a></h1>
+	<h1><a href={item.link} target="_blank">{item.title}</a></h1>
 	<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} />
 
 	<div class="content">
-		<img src={item.media_content[0].url} alt="sorry" style="width: {item.media_content[0].width}px" />
-		<!-- <img src={item.media_content[0].url} alt="sorry" style="width: 50%;" /> -->
+		{#if thumbnail}
+			<img src={thumbnail.url} alt="sorry" style="width: {thumbnail.width}px" />
+			<!-- <img src={thumbnail.url} alt="sorry" style="width: 50%;" /> -->
+		{/if}
 		<div class="description">
 			<div>
 				{@html item.description}
@@ -29,7 +38,7 @@
 			</div>
 			{#each nextThree as next}
 				<hr />
-				<h3 class="substory"><a href="/story/{next.item_id}">{next.title}</a></h3>
+				<h3 class="substory"><a href={next.link} target="_blank">{next.title}</a></h3>
 			{/each}
 		</div>
 	</div>

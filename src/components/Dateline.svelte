@@ -3,15 +3,17 @@
 
 	interface Props {
 		publishedAt: Date;
-		showBreaking: boolean;
+		breakingMinutes?: number;
 	}
 
-	let { publishedAt, showBreaking }: Props = $props();
+	let { publishedAt, breakingMinutes }: Props = $props();
+
+	let showBreaking: boolean = $derived.by(() => !!breakingMinutes);
 
 	let timeUnit: TimeAgo = $derived.by(() => StoryUtil.getTimeSincePublished(publishedAt));
 </script>
 
-<span class={timeUnit.unit === TimeUnit.MINUTE && timeUnit.value < 30 && showBreaking ? 'breaking' : ''}
+<span class={timeUnit.unit === TimeUnit.MINUTE && showBreaking && timeUnit.value < (breakingMinutes ?? 0) ? 'breaking' : ''}
 	>{timeUnit.value}
 	{timeUnit.unit}{#if timeUnit.value > 1}s{/if} ago</span
 >

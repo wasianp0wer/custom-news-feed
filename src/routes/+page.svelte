@@ -24,7 +24,7 @@
 		data.newsItems
 			.slice(1)
 			.filter((item) => !item.categories.includes(topCategory))
-			.slice(0, layoutConfig.newStoryRows * 3 - 1)
+			.slice(0, layoutConfig.newStoryRows * 3 - 2)
 	);
 
 	let latestItems = $derived.by(() =>
@@ -37,47 +37,36 @@
 
 	let opinionItems = $derived.by(() => data.opinionItems.slice(0, layoutConfig.opinionCount));
 	let localItems = $derived.by(() => data.localItems.slice(0, layoutConfig.localStoryRows * 3));
+	let investigationItems = $derived.by(() => data.investigativeItems.slice(0, layoutConfig.investigationRows * 3));
+	let styleRows = $derived.by(() => data.popCultureItems.slice(0, layoutConfig.styleRows * 3));
 </script>
 
 <div>
 	<div class="stories">
 		<TopStory item={topStory} nextThree={topThreeItemsAssociatedWithTopStory} />
-		<StoryColumn items={opinionItems} />
+		<StoryColumn items={opinionItems} align="right" title="Opinions" gridRow={1} />
+		<StoryColumn items={latestItems} align="left" title="Latest" gridRow={2} />
 		{#each displayItems as item, index}
-			{#if index > 0}
-				<Story {item} />
-			{/if}
+			<Story {item} highlightTimeIfBreaking={index < 4} />
 		{/each}
 	</div>
 	<h1 class="section-divider">Top Investigations</h1>
 	<div class="stories">
-		<Story item={topStory} />
-		<Story item={topStory} />
-		<Story item={topStory} />
-	</div>
-	<h1 class="section-divider">Latest</h1>
-	<!-- Condensed section with just headlines that has any stories from primary news that are 
-   not already displayed sorted by recency rather than relevence -->
-	<div class="stories">
-		{#each latestItems as item}
-			<Story {item} />
-			<!-- TODO: Replace with some kind of condensed box like opinions. Maybe this moves up and is on the left, kind of below and opposite opinions? -->
+		{#each investigationItems as item, index}
+			<Story {item} highlightTimeIfBreaking={true} />
 		{/each}
 	</div>
 	<h1 class="section-divider">Local</h1>
 	<div class="stories">
-		{#each localItems as item}
-			<Story {item} />
+		{#each localItems as item, index}
+			<Story {item} highlightTimeIfBreaking={index < 3} />
 		{/each}
 	</div>
 	<h1 class="section-divider">Style and culture</h1>
 	<div class="stories">
-		<Story item={topStory} />
-		<Story item={topStory} />
-		<Story item={topStory} />
-		<Story item={topStory} />
-		<Story item={topStory} />
-		<Story item={topStory} />
+		{#each styleRows as item, index}
+			<Story {item} highlightTimeIfBreaking={index < 3} />
+		{/each}
 	</div>
 </div>
 

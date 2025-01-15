@@ -10,12 +10,16 @@ type GuardianFeed = {
 export const load = (async ({ cookies }) => {
 	const parser = new RssParser();
 	const newsFeed = await parser.parseUrl('https://www.theguardian.com/us/rss');
-	const localFeed = await parser.parseUrl('https://51st.news/rss/');
-	const opinionFeed = await parser.parseUrl('https://www.theguardian.com/us/commentisfree/rss');
+	const fiftyFirstFeed = await parser.parseUrl('https://51st.news/rss/');
+	const guardianOpinionFeed = await parser.parseUrl('https://www.theguardian.com/us/commentisfree/rss');
+	const propublicaFeed = await parser.parseUrl('https://theintercept.com/feed/');
+	const varietyFeed = await parser.parseUrl('https://variety.com/feed/');
 	return {
 		newsItems: newsFeed.items,
-		localItems: localFeed.items,
-		opinionItems: opinionFeed.items
+		localItems: fiftyFirstFeed.items,
+		opinionItems: guardianOpinionFeed.items,
+		investigativeItems: propublicaFeed.items,
+		popCultureItems: varietyFeed.items
 	};
 }) satisfies PageServerLoad;
 

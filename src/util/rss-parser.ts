@@ -48,15 +48,25 @@ export class RssParser {
 	}
 
 	transformToConsistentFormat(xml: any) {
-		console.log(Object.keys(xml));
 		console.log(xml.title);
 		switch (xml.title) {
 			case 'The Guardian':
-			case 'Opinion | The Guardian':
 				this.transformGuardianXml(xml);
+				break;
+			case 'Opinion | The Guardian':
+				this.transformGuardianOpinionXml(xml);
 				break;
 			case 'The 51st':
 				this.transformFiftyFirstXml(xml);
+				break;
+			case 'ProPublica':
+				this.transformPropublica(xml);
+				break;
+			case 'The Intercept':
+				this.transformTheIntercept(xml);
+				break;
+			case 'Variety':
+				this.transformVariety(xml);
 				break;
 		}
 	}
@@ -74,14 +84,46 @@ export class RssParser {
 	}
 
 	transformFiftyFirstXml(xml: RssPage) {
-		console.log('hi');
 		for (let item of xml.items) {
 			item.source = RssSource.FIFTYFIRST;
 		}
 	}
 
+	transformVariety(xml: RssPage) {
+		for (let item of xml.items) {
+			item.source = RssSource.PROPUBLICA;
+			const match = item.description.match(/[a-z]\.( |$)/);
+			if (match) {
+				item.description = item.description.split(match[0])[0] + match[0];
+			}
+		}
+	}
+
+	transformPropublica(xml: RssPage) {
+		for (let item of xml.items) {
+			item.source = RssSource.PROPUBLICA;
+		}
+	}
+
+	transformTheIntercept(xml: RssPage) {
+		for (let item of xml.items) {
+			if ((item.dc_creator as any) instanceof Array) {
+				item.dc_creator = (item.dc_creator as any).join(', ');
+			}
+			item.description = item.description.split('<p>')[1].split('</p>')[0];
+			item.source = RssSource.THEINTERCEPT;
+		}
+	}
+
+	transformGuardianOpinionXml(xml: RssPage) {
+		this.transformGuardianXml(xml);
+		xml.items.forEach((item: RssItem) => {
+			item.categories.push('Opinion');
+			item.title = item.title.split(' | ')[0];
+		});
+	}
+
 	transformGuardianXml(xml: RssPage) {
-		console.log('what');
 		xml.items.forEach((item: RssItem) => {
 			item.description = item.description.split('<p>')[1].split('</p>')[0];
 			const newMediaContent: MediaContent[] = [];
@@ -133,5 +175,8 @@ export interface MediaContent {
 
 export enum RssSource {
 	GUARDIAN = 'The Guardian',
-	FIFTYFIRST = 'The 51st'
+	FIFTYFIRST = 'The 51st',
+	PROPUBLICA = 'ProPublica',
+	THEINTERCEPT = 'The Intercept',
+	VARIETY = 'Variety'
 }
