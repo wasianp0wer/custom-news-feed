@@ -48,7 +48,6 @@ export class RssParser {
 	}
 
 	transformToConsistentFormat(xml: any) {
-		console.log(xml.title);
 		switch (xml.title) {
 			case 'The Guardian':
 				this.transformGuardianXml(xml);
@@ -141,7 +140,13 @@ export class RssParser {
 			}
 			item.media_content = newMediaContent;
 			item.source = RssSource.GUARDIAN;
-			item.categories = item.categories.map((c) => (c as any)['#text']);
+			item.categories = item.categories
+				? item.categories.map((c) => {
+						if ((c as any) instanceof Object) {
+							return (c as any)['#text'];
+						}
+					})
+				: [];
 		});
 	}
 }
