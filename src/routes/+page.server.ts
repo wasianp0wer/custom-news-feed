@@ -45,7 +45,7 @@ export const load = (async ({ cookies }) => {
 
 export const actions = {} satisfies Actions;
 
-export enum CacheSource {
+enum CacheSource {
 	NEWS = 'news',
 	LOCAL = 'local',
 	OPINION = 'opinion',
