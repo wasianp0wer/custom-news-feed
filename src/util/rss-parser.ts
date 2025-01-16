@@ -99,6 +99,7 @@ export class RssParser {
 	}
 
 	transformArlFfxNow(xml: RssPage, title: string) {
+		xml.items = xml.items.filter((item: RssItem) => !item.title.includes('Daily Debrief'));
 		for (let item of xml.items) {
 			if (title === 'ARLnow') {
 				item.source = RssSource.ARL_NOW;
@@ -107,6 +108,11 @@ export class RssParser {
 				item.source = RssSource.FFX_NOW;
 			}
 			item.categories.push('Local News');
+			const regex = /\.[^\.(\/\>)]*\[&#8230;\]/;
+			const newDescription = item.description.replace(regex, '.');
+			if (newDescription.length !== 0) {
+				item.description = item.description.replace(regex, '.').replace(/ *\[&#8230;\]/, '.');
+			}
 		}
 	}
 
@@ -119,7 +125,7 @@ export class RssParser {
 
 	transformVariety(xml: RssPage) {
 		for (let item of xml.items) {
-			item.source = RssSource.PROPUBLICA;
+			item.source = RssSource.VARIETY;
 			const match = item.description.match(/[a-z]\.( |$)/);
 			if (match) {
 				item.description = item.description.split(match[0])[0] + match[0];
