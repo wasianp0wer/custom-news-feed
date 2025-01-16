@@ -1,7 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { XMLParser, XMLBuilder, XMLValidator } from 'fast-xml-parser';
-import { RssParser, type RssPage } from '../util/rss-parser';
+import { RssParser, type RssItem, type RssPage } from '../util/rss-parser';
 
 const cache = new Map<string, RssPage>();
 let lastCacheUpdate: Date | undefined = undefined;
@@ -15,11 +15,18 @@ export const load = (async ({ cookies }) => {
 			parser.parseUrl('https://www.theguardian.com/us/rss').then((rss) => {
 				cache.set(CacheSource.NEWS, rss);
 			}),
-			parser.parseUrl('https://51st.news/rss/').then((rss) => {
-				cache.set(CacheSource.LOCAL, rss);
+			await Promise.all([
+				parser.parseUrl('https://51st.news/rss/'),
+				parser.parseUrl('https://www.arlnow.com/feed/'),
+				parser.parseUrl('https://www.ffxnow.com/feed/')
+			]).then(([fiftyFirst, arlNow, ffxNow]) => {
+				cache.set(CacheSource.LOCAL, sortMultipleSources(24, fiftyFirst, arlNow, ffxNow));
 			}),
-			parser.parseUrl('https://www.theguardian.com/us/commentisfree/rss').then((rss) => {
-				cache.set(CacheSource.OPINION, rss);
+			await Promise.all([
+				parser.parseUrl('https://www.theguardian.com/us/commentisfree/rss')
+				// parser.parseUrl('https://jacobin.com/feed/')
+			]).then(([guardian]) => {
+				cache.set(CacheSource.OPINION, sortMultipleSources(6, guardian));
 			}),
 			parser.parseUrl('https://theintercept.com/feed/').then((rss) => {
 				cache.set(CacheSource.INVESTIGATIVE, rss);
@@ -44,6 +51,31 @@ export const load = (async ({ cookies }) => {
 }) satisfies PageServerLoad;
 
 export const actions = {} satisfies Actions;
+
+function sortMultipleSources(tooOldThresholdHours: number, ...sources: RssPage[]): RssPage {
+	const total: RssItem[] = [];
+	let thisRound: RssItem[] = [];
+	while (sources.find((source) => source.items.length > 0)) {
+		for (let source of sources) {
+			if (source.items.length > 0) {
+				thisRound.push(source.items.shift()!);
+			}
+		}
+		thisRound.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+		if (thisRound.length === 0) {
+			break;
+		}
+		const first = thisRound.shift()!;
+		total.push(first);
+		for (let item of thisRound) {
+			if (first.pubDate.getTime() < item.pubDate.getTime() + tooOldThresholdHours * 3600000) {
+				total.push(item);
+			}
+		}
+		thisRound = thisRound.filter((item) => !total.includes(item));
+	}
+	return { items: total } as RssPage;
+}
 
 enum CacheSource {
 	NEWS = 'news',

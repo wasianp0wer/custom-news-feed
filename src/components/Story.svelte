@@ -21,7 +21,7 @@
 
 <div class="story">
 	<div class="headline"><h2><a href={item.link} target="_blank">{@html item.title}</a></h2></div>
-	<!-- TODO: Need to be able to click anywhere in the headline to go -->
+	<!-- TODO: Need to be able to click anywhere in the headline to go to link -->
 	<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={highlightTimeIfBreaking} />
 	{#if thumbnail}
 		<img src={thumbnail.url} width={thumbnail.width} alt="sorry" />

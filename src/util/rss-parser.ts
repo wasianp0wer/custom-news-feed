@@ -22,7 +22,13 @@ export class RssParser {
 	}
 
 	parse(rawXml: string): RssPage {
-		const xml = this.xmlParser.parse(rawXml).rss.channel;
+		const baseXml = this.xmlParser.parse(rawXml);
+		if (!baseXml.rss) {
+			baseXml.rss = {
+				channel: baseXml.feed
+			};
+		}
+		const xml = baseXml.rss.channel;
 		this.checkArrayFields(xml);
 		this.transformToConsistentFormat(xml);
 		this.validate(xml);
@@ -37,6 +43,9 @@ export class RssParser {
 	checkArrayFields(xml: RssPage) {
 		if (!Array.isArray(xml.items)) {
 			xml.items = [xml.items];
+		}
+		if ((xml.title as any) instanceof Object) {
+			xml.title = (xml.title as any)['#text'];
 		}
 		for (const item of xml.items) {
 			for (const field of this.itemArrayFields) {
@@ -58,6 +67,10 @@ export class RssParser {
 			case 'The 51st':
 				this.transformFiftyFirstXml(xml);
 				break;
+			case 'ARLnow':
+			case 'FFXnow':
+				this.transformArlFfxNow(xml, xml.title);
+				break;
 			case 'ProPublica':
 				this.transformPropublica(xml);
 				break;
@@ -66,6 +79,9 @@ export class RssParser {
 				break;
 			case 'Variety':
 				this.transformVariety(xml);
+				break;
+			case 'Jacobin':
+				this.transformJacobin(xml);
 				break;
 		}
 	}
@@ -82,9 +98,22 @@ export class RssParser {
 		}
 	}
 
+	transformArlFfxNow(xml: RssPage, title: string) {
+		for (let item of xml.items) {
+			if (title === 'ARLnow') {
+				item.source = RssSource.ARL_NOW;
+			}
+			if (title === 'FFXnow') {
+				item.source = RssSource.FFX_NOW;
+			}
+			item.categories.push('Local News');
+		}
+	}
+
 	transformFiftyFirstXml(xml: RssPage) {
 		for (let item of xml.items) {
 			item.source = RssSource.FIFTYFIRST;
+			item.categories.push('Local News');
 		}
 	}
 
@@ -112,6 +141,13 @@ export class RssParser {
 			item.description = item.description.split('<p>')[1].split('</p>')[0];
 			item.source = RssSource.THEINTERCEPT;
 		}
+	}
+
+	transformJacobin(xml: RssPage) {
+		xml.items.forEach((item: RssItem) => {
+			item.source = RssSource.JACOBIN;
+			item.categories.push('Opinion');
+		});
 	}
 
 	transformGuardianOpinionXml(xml: RssPage) {
@@ -183,5 +219,8 @@ export enum RssSource {
 	FIFTYFIRST = 'The 51st',
 	PROPUBLICA = 'ProPublica',
 	THEINTERCEPT = 'The Intercept',
-	VARIETY = 'Variety'
+	VARIETY = 'Variety',
+	ARL_NOW = 'ARLnow',
+	FFX_NOW = 'FFXnow',
+	JACOBIN = 'Jacobin'
 }
