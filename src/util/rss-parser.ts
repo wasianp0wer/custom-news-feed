@@ -99,7 +99,9 @@ export class RssParser {
 	}
 
 	transformArlFfxNow(xml: RssPage, title: string) {
-		xml.items = xml.items.filter((item: RssItem) => !item.title.includes('Daily Debrief'));
+		xml.items = xml.items.filter(
+			(item: RssItem) => !item.title.includes('Daily Debrief') && item.dc_creator === 'Sponsor' && !item.categories.includes('Sponsored')
+		);
 		for (let item of xml.items) {
 			if (title === 'ARLnow') {
 				item.source = RssSource.ARL_NOW;

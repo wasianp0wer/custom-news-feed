@@ -33,8 +33,10 @@
 		{#each items as item}
 			<div class="item">
 				<hr class="divider" />
-				<h3><a href={item.link} target="_blank">{item.title}</a></h3>
-				<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} breakingMinutes={60} />
+				<div class="story">
+					<h3><a href={item.link} target="_blank">{item.title}</a></h3>
+					<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} breakingMinutes={60} />
+				</div>
 			</div>
 		{/each}
 	</div>
@@ -59,6 +61,25 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+	}
+
+	.story {
+		/* border-radius: 10px; */
+		/* padding: 0.5em 0.25em; */
+		padding-right: 0.75rem;
+		/* width: calc(100% - 0.75rem); */
+		border-left: 2px solid transparent;
+		transition:
+			transform 0.3s ease-in-out,
+			border 0.3s ease-in-out,
+			padding 0.3s;
+	}
+
+	.story:hover {
+		/* transform: scale(var(--story-grow-factor)); */
+		border-left: 2px solid var(--color-theme-1);
+		padding-left: 0.75rem;
+		padding-right: 0;
 	}
 
 	.item {
