@@ -166,7 +166,7 @@ export class RssParser {
 
 	transformGuardianXml(xml: RssPage) {
 		xml.items.forEach((item: RssItem) => {
-			item.description = item.description.split('<p>')[1].split('</p>')[0];
+			item.description = item.description.split('<p>')[1]?.split('</p>')[0] ?? '';
 			const newMediaContent: MediaContent[] = [];
 			for (const media of item.media_content) {
 				const existing = newMediaContent.find((m) => m.url.split('?')[0] === media.url.split('?')[0]);

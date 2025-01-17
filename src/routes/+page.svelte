@@ -62,7 +62,7 @@
 			<Story {item} highlightTimeIfBreaking={index < 3} />
 		{/each}
 	</div>
-	<h1 class="section-divider">Style and culture</h1>
+	<h1 class="section-divider">Style and Culture</h1>
 	<div class="stories">
 		{#each styleRows as item, index}
 			<Story {item} highlightTimeIfBreaking={index < 3} />
