@@ -2,6 +2,7 @@ import { fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { XMLParser, XMLBuilder, XMLValidator } from 'fast-xml-parser';
 import { RssParser, type RssItem, type RssPage } from '../util/rss-parser';
+import { layoutConfig } from '../config/layout-config';
 
 const cache = new Map<string, RssPage>();
 let lastCacheUpdate: Date | undefined = undefined;
@@ -43,10 +44,10 @@ export const load = (async ({ cookies }) => {
 	const varietyFeed = cache.get(CacheSource.POP_CULTURE);
 	return {
 		newsItems: newsFeed?.items ?? [],
-		localItems: fiftyFirstFeed?.items ?? [],
-		opinionItems: guardianOpinionFeed?.items ?? [],
-		investigativeItems: propublicaFeed?.items ?? [],
-		popCultureItems: varietyFeed?.items ?? []
+		localItems: fiftyFirstFeed?.items.slice(0, layoutConfig.localStoryRows * 3) ?? [],
+		opinionItems: guardianOpinionFeed?.items.slice(0, layoutConfig.opinionCount) ?? [],
+		investigativeItems: propublicaFeed?.items.slice(0, layoutConfig.investigationRows * 3) ?? [],
+		popCultureItems: varietyFeed?.items.slice(0, layoutConfig.styleRows * 3) ?? []
 	};
 }) satisfies PageServerLoad;
 
