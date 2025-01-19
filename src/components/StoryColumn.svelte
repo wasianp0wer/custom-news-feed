@@ -109,6 +109,25 @@
 
 	.readmore {
 		margin-top: 0.5rem;
+		border-radius: 20px;
+		background-color: var(--color-theme-6);
+		color: var(--color-theme-1);
+		padding: 10px;
+		border: 2px solid transparent;
+		transition:
+			color 0.3s ease-in-out,
+			background-color 0.3s ease-in-out,
+			border 0.3s ease-in-out;
+	}
+	.readmore:hover {
+		margin-top: 0.5rem;
+		border-radius: 20px;
+		background-color: var(--color-theme-5);
+		border: 2px solid var(--color-theme-6) !important;
+
+		color: #fff;
+		padding: 10px;
+		border: 0px;
 	}
 
 	.divider {

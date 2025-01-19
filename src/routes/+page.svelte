@@ -20,11 +20,13 @@
 		return data.newsItems.filter((item) => item.categories.includes(topCategory)).slice(1, 4);
 	});
 
+	let expandOpinion = $state(false);
+
 	let displayItems = $derived.by(() =>
 		data.newsItems
 			.slice(1)
 			.filter((item) => !item.categories.includes(topCategory))
-			.slice(0, layoutConfig.newStoryRows * 3 - 2)
+			.slice(0, layoutConfig.newStoryRows * 3 - 2 - (expandOpinion ? 1 : 0))
 	);
 
 	let latestItems = $derived.by(() =>
@@ -34,8 +36,6 @@
 			.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
 			.slice(0, layoutConfig.latestCount)
 	);
-
-	let expandOpinion = $state(false);
 
 	let opinionCount = $derived.by(() => (expandOpinion ? layoutConfig.expandedOpinionCount : layoutConfig.opinionCount));
 
