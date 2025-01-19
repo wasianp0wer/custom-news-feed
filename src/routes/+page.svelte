@@ -35,17 +35,25 @@
 			.slice(0, layoutConfig.latestCount)
 	);
 
-	let opinionItems = $derived.by(() => data.opinionItems.slice(0, layoutConfig.opinionCount));
+	let expandOpinion = $state(false);
+
+	let opinionCount = $derived.by(() => (expandOpinion ? layoutConfig.expandedOpinionCount : layoutConfig.opinionCount));
+
+	let opinionItems = $derived.by(() => data.opinionItems.slice(0, opinionCount));
 	let localItems = $derived.by(() => data.localItems.slice(0, layoutConfig.localStoryRows * 3));
 	let investigationItems = $derived.by(() => data.investigativeItems.slice(0, layoutConfig.investigationRows * 3));
 	let styleRows = $derived.by(() => data.popCultureItems.slice(0, layoutConfig.styleRows * 3));
+
+	function onOpinionExpand(expanded: boolean) {
+		expandOpinion = expanded;
+	}
 </script>
 
 <div>
 	<div class="stories">
 		<TopStory item={topStory} nextThree={topThreeItemsAssociatedWithTopStory} />
-		<StoryColumn items={opinionItems} align="right" title="Opinions" gridRow={1} />
-		<StoryColumn items={latestItems} align="left" title="Latest" gridRow={2} />
+		<StoryColumn items={opinionItems} align="right" title="Opinions" gridRow={1} link="/opinions" onExpand={onOpinionExpand} />
+		<StoryColumn items={latestItems} align="left" title="Latest" gridRow={2} includeExpand={false} />
 		{#each displayItems as item, index}
 			<Story {item} highlightTimeIfBreaking={index < 4} />
 		{/each}

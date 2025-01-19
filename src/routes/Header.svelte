@@ -3,7 +3,7 @@
 	import logo from '$lib/images/svelte-logo.svg';
 	import github from '$lib/images/github.svg';
 
-	let tabs = ['Investigations', 'Local', 'Politics', 'World', 'Opinions', 'Style', 'Culture', 'Sports', 'Comics and Games'];
+	let tabs = ['Investigations', 'Local', 'Politics', 'World', 'Opinions', 'Style', 'Culture', 'Sports', 'The Moron Corner', 'Comics and Games'];
 </script>
 
 <header>

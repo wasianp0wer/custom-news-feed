@@ -100,7 +100,7 @@ export class RssParser {
 
 	transformArlFfxNow(xml: RssPage, title: string) {
 		xml.items = xml.items.filter(
-			(item: RssItem) => !item.title.includes('Daily Debrief') && item.dc_creator === 'Sponsor' && !item.categories.includes('Sponsored')
+			(item: RssItem) => !item.title.includes('Daily Debrief') && item.dc_creator !== 'Sponsor' && !item.categories.includes('Sponsored')
 		);
 		for (let item of xml.items) {
 			if (title === 'ARLnow') {
@@ -171,6 +171,9 @@ export class RssParser {
 			item.description = item.description.split('<p>')[1]?.split('</p>')[0] ?? '';
 			const newMediaContent: MediaContent[] = [];
 			for (const media of item.media_content) {
+				if (media === undefined) {
+					continue;
+				}
 				const existing = newMediaContent.find((m) => m.url.split('?')[0] === media.url.split('?')[0]);
 				if (existing) {
 					if (existing.width >= media.width) {
@@ -179,7 +182,7 @@ export class RssParser {
 						newMediaContent.splice(newMediaContent.indexOf(existing), 1);
 					}
 				}
-				media.width = parseInt(media.width as any);
+				media.width = parseInt((media?.width as any) ?? '0');
 				newMediaContent.push(media);
 			}
 			item.media_content = newMediaContent;

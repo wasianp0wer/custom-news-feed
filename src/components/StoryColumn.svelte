@@ -9,10 +9,15 @@
 		align: 'left' | 'right' | 'center';
 		title: string;
 		gridRow: number;
+		includeExpand?: boolean;
 		gridSpan?: number;
+		link?: string;
+		onExpand?: (expanded: boolean) => void;
 	}
 
-	let { items, align, title, gridRow, gridSpan = 1 }: Props = $props();
+	let { items, align, title, gridRow, link, gridSpan = 1, includeExpand = true, onExpand }: Props = $props();
+
+	let expanded = $state(false);
 
 	let gridColumn = $derived.by(() => {
 		switch (align) {
@@ -25,10 +30,21 @@
 			// FIXME: I'm like 90% sure this doesn't work.
 		}
 	});
+
+	function toggleExpand() {
+		expanded = !expanded;
+		if (onExpand) {
+			onExpand(expanded);
+		}
+	}
 </script>
 
-<div class="column" style="grid-column: {gridColumn}; grid-row: {gridRow + 1}">
-	<h2>{title}</h2>
+<div class="column" style="grid-column: {gridColumn}; grid-row: {gridRow + 1} / {gridRow + 2 + (expanded ? 1 : 0)};">
+	{#if link}
+		<h2><a href={link}>{title}</a> ➤</h2>
+	{:else}
+		<h2>{title}</h2>
+	{/if}
 	<div class="columnitems">
 		{#each items as item}
 			<div class="item">
@@ -40,7 +56,9 @@
 			</div>
 		{/each}
 	</div>
-	<div class="readmore"><a href="/opinion">Read more ➤</a></div>
+	{#if includeExpand}
+		<button class="readmore" onclick={toggleExpand}>{expanded ? 'Condense' : 'Expand'}</button>
+	{/if}
 </div>
 
 <style>
@@ -55,6 +73,10 @@
 			transform 0.3s ease-in-out,
 			border 0.3s ease-in-out;
 		height: 100%;
+	}
+	h2 a {
+		color: inherit;
+		font-weight: inherit;
 	}
 
 	.columnitems {

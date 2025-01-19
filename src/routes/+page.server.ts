@@ -45,7 +45,7 @@ export const load = (async ({ cookies }) => {
 	return {
 		newsItems: newsFeed?.items ?? [],
 		localItems: fiftyFirstFeed?.items.slice(0, layoutConfig.localStoryRows * 3) ?? [],
-		opinionItems: guardianOpinionFeed?.items.slice(0, layoutConfig.opinionCount) ?? [],
+		opinionItems: guardianOpinionFeed?.items.slice(0, layoutConfig.expandedOpinionCount) ?? [],
 		investigativeItems: propublicaFeed?.items.slice(0, layoutConfig.investigationRows * 3) ?? [],
 		popCultureItems: varietyFeed?.items.slice(0, layoutConfig.styleRows * 3) ?? []
 	};
@@ -54,6 +54,7 @@ export const load = (async ({ cookies }) => {
 export const actions = {} satisfies Actions;
 
 function sortMultipleSources(tooOldThresholdHours: number, ...sources: RssPage[]): RssPage {
+	console.log('sources', sources);
 	const total: RssItem[] = [];
 	let thisRound: RssItem[] = [];
 	while (sources.find((source) => source.items.length > 0)) {
