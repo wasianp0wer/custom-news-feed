@@ -13,15 +13,18 @@ export const load = (async ({ cookies }) => {
 		cache.clear();
 		const parser = new RssParser();
 		await Promise.all([
-			parser.parseUrl('https://www.theguardian.com/us/rss').then((rss) => {
-				cache.set(CacheSource.NEWS, rss);
-			}),
 			await Promise.all([
+				parser.parseUrl('https://www.theguardian.com/us/rss'),
 				parser.parseUrl('https://51st.news/rss/'),
 				parser.parseUrl('https://www.arlnow.com/feed/'),
 				parser.parseUrl('https://www.ffxnow.com/feed/')
-			]).then(([fiftyFirst, arlNow, ffxNow]) => {
-				cache.set(CacheSource.LOCAL, sortMultipleSources(24, fiftyFirst, arlNow, ffxNow));
+			]).then(([guardian, fiftyFirst, arlNow, ffxNow]) => {
+				cache.set(CacheSource.NEWS, guardian);
+				const localGuardian = {
+					...guardian,
+					items: guardian.items.filter((item) => item.categories.includes('Washington DC'))
+				};
+				cache.set(CacheSource.LOCAL, sortMultipleSources(24, localGuardian, fiftyFirst, arlNow, ffxNow));
 			}),
 			await Promise.all([
 				parser.parseUrl('https://www.theguardian.com/us/commentisfree/rss')
@@ -38,13 +41,13 @@ export const load = (async ({ cookies }) => {
 		]);
 	}
 	const newsFeed = cache.get(CacheSource.NEWS);
-	const fiftyFirstFeed = cache.get(CacheSource.LOCAL);
+	const localFeed = cache.get(CacheSource.LOCAL);
 	const guardianOpinionFeed = cache.get(CacheSource.OPINION);
 	const propublicaFeed = cache.get(CacheSource.INVESTIGATIVE);
 	const varietyFeed = cache.get(CacheSource.POP_CULTURE);
 	return {
 		newsItems: newsFeed?.items ?? [],
-		localItems: fiftyFirstFeed?.items.slice(0, layoutConfig.localStoryRows * 3) ?? [],
+		localItems: localFeed?.items.slice(0, layoutConfig.localStoryRows * 3) ?? [],
 		opinionItems: guardianOpinionFeed?.items.slice(0, layoutConfig.expandedOpinionCount) ?? [],
 		investigativeItems: propublicaFeed?.items.slice(0, layoutConfig.investigationRows * 3) ?? [],
 		popCultureItems: varietyFeed?.items.slice(0, layoutConfig.styleRows * 3) ?? []
