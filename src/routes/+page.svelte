@@ -20,6 +20,16 @@
 		return data.newsItems.filter((item) => item.categories.includes(topCategory)).slice(1, 4);
 	});
 
+	let topStorySize = $derived.by(() => {
+		if (topThreeItemsAssociatedWithTopStory.length === 3) {
+			return 3;
+		} else if (topThreeItemsAssociatedWithTopStory.length === 0) {
+			return 1;
+		} else {
+			return 2;
+		}
+	});
+
 	let expandOpinion = $state(false);
 
 	let displayItems = $derived.by(() =>
@@ -43,16 +53,6 @@
 	let localItems = $derived.by(() => data.localItems.slice(0, layoutConfig.localStoryRows * 3));
 	let investigationItems = $derived.by(() => data.investigativeItems.slice(0, layoutConfig.investigationRows * 3));
 	let styleRows = $derived.by(() => data.popCultureItems.slice(0, layoutConfig.styleRows * 3));
-
-	let topStorySize = $derived.by(() => {
-		if (topThreeItemsAssociatedWithTopStory.length === 3) {
-			return 3;
-		} else if (topThreeItemsAssociatedWithTopStory.length === 0) {
-			return 1;
-		} else {
-			return 2;
-		}
-	});
 
 	function onOpinionExpand(expanded: boolean) {
 		expandOpinion = expanded;
