@@ -3,7 +3,23 @@
 	import logo from '$lib/images/svelte-logo.svg';
 	import github from '$lib/images/github.svg';
 
-	let tabs = ['Investigations', 'Local', 'Politics', 'World', 'Opinions', 'Style', 'Culture', 'Sports', 'The Moron Corner', 'Comics and Games'];
+	interface Tab {
+		headerName: string;
+		route: string;
+	}
+
+	let tabs: Tab[] = [
+		{ headerName: 'Investigations', route: '/investigations' },
+		{ headerName: 'Local', route: '/local' },
+		{ headerName: 'Politics', route: '/us-politics' },
+		{ headerName: 'World', route: '/world' },
+		{ headerName: 'Opinions', route: '/opinions' },
+		{ headerName: 'Style', route: '/style' },
+		{ headerName: 'Entertainment', route: '/entertainment' },
+		{ headerName: 'Sports', route: '/sports' },
+		{ headerName: 'The Moron Corner', route: '/morons' },
+		{ headerName: 'Comics and Games', route: '/justforfun' }
+	];
 </script>
 
 <header>
@@ -18,8 +34,8 @@
 				<a href={'/'}>Home</a>
 			</li>
 			{#each tabs as tab}
-				<li aria-current={$page.url.pathname === '/' + tab.toLowerCase() ? 'page' : undefined}>
-					<a href={'/' + tab.toLowerCase()}>{tab}</a>
+				<li aria-current={$page.url.pathname === tab.route ? 'page' : undefined}>
+					<a href={tab.route}>{tab.headerName}</a>
 				</li>
 			{/each}
 		</ul>
