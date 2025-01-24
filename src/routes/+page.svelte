@@ -26,7 +26,7 @@
 		data.newsItems
 			.slice(1)
 			.filter((item) => !item.categories.includes(topCategory))
-			.slice(0, layoutConfig.newStoryRows * 3 - 2 - (expandOpinion ? 1 : 0))
+			.slice(0, layoutConfig.newStoryRows * 3 - 2 - (expandOpinion ? 1 : 0) + (3 - topStorySize))
 	);
 
 	let latestItems = $derived.by(() =>
@@ -44,6 +44,16 @@
 	let investigationItems = $derived.by(() => data.investigativeItems.slice(0, layoutConfig.investigationRows * 3));
 	let styleRows = $derived.by(() => data.popCultureItems.slice(0, layoutConfig.styleRows * 3));
 
+	let topStorySize = $derived.by(() => {
+		if (topThreeItemsAssociatedWithTopStory.length === 3) {
+			return 3;
+		} else if (topThreeItemsAssociatedWithTopStory.length === 0) {
+			return 1;
+		} else {
+			return 2;
+		}
+	});
+
 	function onOpinionExpand(expanded: boolean) {
 		expandOpinion = expanded;
 	}
@@ -51,7 +61,7 @@
 
 <div>
 	<div class="stories">
-		<TopStory item={topStory} nextThree={topThreeItemsAssociatedWithTopStory} />
+		<TopStory item={topStory} nextThree={topThreeItemsAssociatedWithTopStory} {topStorySize} />
 		<StoryColumn items={opinionItems} align="right" title="Opinions" gridRow={1} link="/opinions" onExpand={onOpinionExpand} />
 		<StoryColumn items={latestItems} align="left" title="Latest" gridRow={2} includeExpand={false} />
 		{#each displayItems as item, index}

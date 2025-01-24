@@ -3,13 +3,15 @@
 	import { StoryUtil } from '../util/story-util';
 	import ByLine from './ByLine.svelte';
 	import Dateline from './Dateline.svelte';
+	import Story from './Story.svelte';
 
 	interface Props {
 		item: RssItem;
 		nextThree: RssItem[];
+		topStorySize: number;
 	}
 
-	let { item, nextThree }: Props = $props();
+	let { item, nextThree, topStorySize }: Props = $props();
 
 	let mainCategory = $derived.by(() => item.categories[0]);
 
@@ -21,29 +23,33 @@
 	});
 </script>
 
-<div class="first story">
-	<div class="redlabel"><a class="redlabel-text" href="/category/{mainCategory}">{mainCategory}</a></div>
-	<h1><a href={item.link} target="_blank">{item.title}</a></h1>
-	<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} />
+{#if topStorySize === 1}
+	<Story {item} />
+{:else}
+	<div class="first story" style="grid-column: span {topStorySize};">
+		<div class="redlabel"><a class="redlabel-text" href="/category/{mainCategory}">{mainCategory}</a></div>
+		<h1><a href={item.link} target="_blank">{item.title}</a></h1>
+		<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} />
 
-	<div class="content">
-		{#if thumbnail}
-			<img src={thumbnail.url} alt="sorry" style="width: {thumbnail.width}px" />
-			<!-- <img src={thumbnail.url} alt="sorry" style="width: 50%;" /> -->
-		{/if}
-		<div class="description">
-			<div>
-				{@html item.description}
-				<!-- <a class="continue" href="/story/{item.item_id}">Continue reading...</a> -->
+		<div class="content">
+			{#if thumbnail}
+				<img src={thumbnail.url} alt="sorry" style="width: {thumbnail.width}px" />
+				<!-- <img src={thumbnail.url} alt="sorry" style="width: 50%;" /> -->
+			{/if}
+			<div class="description">
+				<div>
+					{@html item.description}
+					<!-- <a class="continue" href="/story/{item.item_id}">Continue reading...</a> -->
+				</div>
+				{#each nextThree as next}
+					<hr />
+					<h3 class="substory"><a href={next.link} target="_blank">{next.title}</a></h3>
+				{/each}
 			</div>
-			{#each nextThree as next}
-				<hr />
-				<h3 class="substory"><a href={next.link} target="_blank">{next.title}</a></h3>
-			{/each}
 		</div>
+		<small>Source: {item.source}</small>
 	</div>
-	<small>Source: {item.source}</small>
-</div>
+{/if}
 
 <style>
 	.redlabel {
@@ -67,7 +73,7 @@
 	}
 
 	.first {
-		grid-column: span 3;
+		/* grid-column: span 3; */
 		background-color: #f9f9f9;
 		border-color: #bbb;
 	}
