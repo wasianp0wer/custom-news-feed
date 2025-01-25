@@ -20,7 +20,8 @@ export const load = (({ cookies }) => {
 		/**
 		 * The correct answer, revealed if the game is over
 		 */
-		answer: game.answers.length >= 6 ? game.answer : null
+		answer: game.answers.length >= 6 ? game.answer : null,
+		isCurrentGuessWinning: game.isCurrentGuessWinning
 	};
 }) satisfies PageServerLoad;
 
@@ -42,6 +43,9 @@ export const actions = {
 		} else {
 			game.guesses[i] += key;
 		}
+
+		const guess = data.getAll('guess') as string[];
+		game.isCurrentGuessWinning = game.enter(guess);
 
 		cookies.set('sverdle', game.toString(), { path: '/' });
 	},

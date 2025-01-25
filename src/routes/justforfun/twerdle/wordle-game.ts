@@ -7,22 +7,25 @@ export class WordleGame {
 	guesses: string[];
 	answers: string[];
 	answer: string;
+	isCurrentGuessWinning: boolean;
 
 	/**
 	 * Create a game object from the player's cookie, or initialise a new game using today's date.
 	 */
 	constructor(serialized: string | undefined = undefined) {
 		if (serialized) {
-			const [index, guesses, answers] = serialized.split('-');
+			const [index, guesses, answers, isCurrentGuessWinning] = serialized.split('-');
 
 			this.index = +index;
 			this.guesses = guesses ? guesses.split(' ') : [];
 			this.answers = answers ? answers.split(' ') : [];
+			this.isCurrentGuessWinning = isCurrentGuessWinning === 'true';
 		} else {
 			const seed = GameUtil.getDailySeed();
 			this.index = seed % words.length;
 			this.guesses = ['', '', '', '', '', ''];
 			this.answers = [];
+			this.isCurrentGuessWinning = false;
 		}
 
 		this.answer = words[this.index];
@@ -73,6 +76,6 @@ export class WordleGame {
 	 * Serialize game state so it can be set as a cookie
 	 */
 	toString() {
-		return `${this.index}-${this.guesses.join(' ')}-${this.answers.join(' ')}`;
+		return `${this.index}-${this.guesses.join(' ')}-${this.answers.join(' ')}-${this.isCurrentGuessWinning}`;
 	}
 }

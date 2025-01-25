@@ -126,6 +126,16 @@
 		}, 3000);
 		navigator.clipboard.writeText(scoreCopyable);
 	}
+
+	function checkwin(event: MouseEvent) {
+		if (data.isCurrentGuessWinning) {
+			data.answers[-1] = 'xxxxx';
+		} else {
+			if (form) {
+				form.badGuess = true;
+			}
+		}
+	}
 </script>
 
 <svelte:window onkeydown={keydown} />
@@ -211,7 +221,7 @@
 			</button>
 		{:else}
 			<div class="keyboard">
-				<button data-key="enter" class:selected={submittable} disabled={!submittable}>enter</button>
+				<button data-key="enter" onclick={checkwin} class:selected={submittable} disabled={!submittable}>enter</button>
 
 				<button onclick={update} data-key="backspace" formaction="?/update" name="key" value="backspace"> back </button>
 
