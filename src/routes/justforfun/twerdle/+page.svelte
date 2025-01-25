@@ -127,6 +127,23 @@
 
 <h1>Twerdle</h1>
 
+{#if showHowToPlay}
+	<div class="overlay" id="overlay"></div>
+	<dialog open class="how-to-play-dialog">
+		<h2>How to Play</h2>
+		<p>Guess the word in 6 tries. Each guess must be a valid 5-letter word. Hit the enter button to submit.</p>
+		<p>After each guess, the color of the tiles will change to show how close your guess was to the word.</p>
+		<br />
+		<ul>
+			<li><span class="exact">🟩</span> The letter is in the correct spot.</li>
+			<li><span class="close">🟨</span> The letter is in the word but in the wrong spot.</li>
+			<li><span class="missing">⬜</span> The letter is not in the word.</li>
+		</ul>
+		<br />
+		<button onclick={() => (showHowToPlay = false)}>Close</button>
+	</dialog>
+{/if}
+
 <form
 	method="post"
 	action="?/enter"
@@ -450,5 +467,52 @@
 		100% {
 			transform: translateX(0);
 		}
+	}
+
+	.overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.5); /* Grey with transparency */
+		z-index: 1; /* Overlay behind modal but above other content */
+	}
+
+	.how-to-play-dialog {
+		border-radius: 10px;
+		padding: 1.5rem;
+		background: white;
+		color: var(--color-text);
+		border: 2px solid var(--color-theme-1);
+		max-width: 90%;
+		margin: auto;
+		z-index: 2;
+	}
+	.how-to-play-dialog h2 {
+		margin-top: 0;
+	}
+	.how-to-play-dialog ul {
+		list-style: none;
+		padding: 0;
+	}
+	.how-to-play-dialog li {
+		display: flex;
+		align-items: center;
+		margin-bottom: 0.5rem;
+	}
+	.how-to-play-dialog li span {
+		margin-right: 0.5rem;
+	}
+	.how-to-play-dialog button {
+		background: var(--color-theme-1);
+		color: white;
+		border: none;
+		padding: 0.5rem 1rem;
+		border-radius: 5px;
+		cursor: pointer;
+	}
+	.how-to-play-dialog button:hover {
+		background: var(--color-theme-2);
 	}
 </style>
