@@ -9,5 +9,6 @@ export const layoutConfig: LayoutConfig = {
 	expandedLatestCount: 12,
 	investigationRows: 1,
 	styleRows: 1,
-	cultureRows: 2
+	cultureRows: 2,
+	sportsRows: 2
 };

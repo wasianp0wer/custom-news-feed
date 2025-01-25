@@ -8,4 +8,5 @@ export interface LayoutConfig {
 	investigationRows: number;
 	styleRows: number;
 	cultureRows: number;
+	sportsRows: number;
 }

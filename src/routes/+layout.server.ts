@@ -42,7 +42,10 @@ export const load = (async ({ cookies }) => {
 				([variety, guardian]) => {
 					cache.set(CacheSource.POP_CULTURE, sortMultipleSources(6, variety, guardian));
 				}
-			)
+			),
+			parser.parseUrl('https://www.cbssports.com/rss/headlines/').then((rss) => {
+				cache.set(CacheSource.SPORTS, rss);
+			})
 		]);
 	}
 	const newsFeed = cache.get(CacheSource.NEWS);
@@ -51,13 +54,15 @@ export const load = (async ({ cookies }) => {
 	const propublicaFeed = cache.get(CacheSource.INVESTIGATIVE);
 	const cultureFeed = cache.get(CacheSource.POP_CULTURE);
 	const styleFeed = cache.get(CacheSource.STYLE);
+	const sportsFeed = cache.get(CacheSource.SPORTS);
 	return {
 		newsItems: newsFeed?.items ?? [],
 		localItems: localFeed?.items ?? [],
 		opinionItems: guardianOpinionFeed?.items ?? [],
 		investigativeItems: propublicaFeed?.items ?? [],
 		popCultureItems: cultureFeed?.items ?? [],
-		styleItems: styleFeed?.items ?? []
+		styleItems: styleFeed?.items ?? [],
+		sportsItems: sportsFeed?.items ?? []
 	};
 }) satisfies LayoutServerLoad;
 
@@ -92,5 +97,6 @@ enum CacheSource {
 	OPINION = 'opinion',
 	INVESTIGATIVE = 'investigative',
 	POP_CULTURE = 'popCulture',
-	STYLE = 'style'
+	STYLE = 'style',
+	SPORTS = 'sports'
 }

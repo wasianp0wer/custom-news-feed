@@ -53,7 +53,9 @@
 	let localItems = $derived.by(() => data.localItems.slice(0, layoutConfig.localStoryRows * 3));
 	let investigationItems = $derived.by(() => data.investigativeItems.slice(0, layoutConfig.investigationRows * 3));
 	let styleItems = $derived.by(() => data.styleItems.slice(0, layoutConfig.styleRows * 3));
-
+	let sportsItems = $derived.by(() =>
+		data.sportsItems.filter((item) => !item.description.toLowerCase().includes('how to watch')).slice(0, layoutConfig.sportsRows * 3)
+	);
 	let cultureItems = $derived.by(() => data.popCultureItems.slice(0, layoutConfig.cultureRows * 3));
 
 	function onOpinionExpand(expanded: boolean) {
@@ -86,6 +88,13 @@
 	<div class="stories">
 		{#each styleItems as item, index}
 			<Story {item} />
+		{/each}
+	</div>
+	<h1 class="section-divider"><a href="/sports">Sports</a> ➤</h1>
+	<div class="stories">
+		<!-- TODO: This can easily get clogged up by a big sports event, but it doesn't have categories. Chat GPT? -->
+		{#each sportsItems as item, index}
+			<Story {item} highlightTimeIfBreaking={index < 3} />
 		{/each}
 	</div>
 	<h1 class="section-divider"><a href="/entertainment">Culture</a> ➤</h1>

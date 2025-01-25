@@ -16,7 +16,7 @@
 		{ headerName: 'Opinions', route: '/opinions' },
 		{ headerName: 'Style', route: '/style' },
 		{ headerName: 'Culture', route: '/entertainment' },
-		// { headerName: 'Sports', route: '/sports' },
+		{ headerName: 'Sports', route: '/sports' },
 		// { headerName: 'Moron Corner', route: '/morons' },
 		{ headerName: 'Comics and Games', route: '/justforfun' }
 	];

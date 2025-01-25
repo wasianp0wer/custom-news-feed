@@ -11,6 +11,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 		opinionItems: parentData.opinionItems.slice(0, layoutConfig.expandedOpinionCount) ?? [],
 		investigativeItems: parentData.investigativeItems.slice(0, layoutConfig.investigationRows * 3) ?? [],
 		popCultureItems: parentData.popCultureItems.slice(0, layoutConfig.cultureRows * 3) ?? [],
-		styleItems: parentData.styleItems.slice(0, layoutConfig.styleRows * 3) ?? []
+		styleItems: parentData.styleItems.slice(0, layoutConfig.styleRows * 3) ?? [],
+		sportsItems: parentData.sportsItems.slice(0, layoutConfig.sportsRows * 3) ?? []
 	};
 };

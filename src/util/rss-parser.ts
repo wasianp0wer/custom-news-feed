@@ -91,6 +91,9 @@ export class RssParser {
 			case 'FoxTrot Classics':
 				this.transformComic(xml);
 				break;
+			case 'CBSSports.com Headlines':
+				this.transformCBSSports(xml);
+				break;
 		}
 	}
 
@@ -103,6 +106,13 @@ export class RssParser {
 			if (!((item.pubDate as any) instanceof Date)) {
 				item.pubDate = new Date(item.pubDate);
 			}
+		}
+	}
+
+	transformCBSSports(xml: RssPage) {
+		for (let item of xml.items) {
+			item.source = RssSource.CBS_SPORTS;
+			item.media_content = [(item as any).enclosure];
 		}
 	}
 
@@ -253,5 +263,6 @@ export enum RssSource {
 	ARL_NOW = 'ARLnow',
 	FFX_NOW = 'FFXnow',
 	JACOBIN = 'Jacobin',
-	GO_COMICS = 'GoComics'
+	GO_COMICS = 'GoComics',
+	CBS_SPORTS = 'CBS Sports'
 }
