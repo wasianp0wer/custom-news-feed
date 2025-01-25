@@ -60,6 +60,7 @@
 	 * if client-side JavaScript is enabled
 	 */
 	function update(event: MouseEvent) {
+		console.log('am I also happening?');
 		event.preventDefault();
 		const key = (event.target as HTMLButtonElement).getAttribute('data-key');
 
