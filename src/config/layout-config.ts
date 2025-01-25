@@ -4,7 +4,7 @@ export const layoutConfig: LayoutConfig = {
 	newStoryRows: 3,
 	localStoryRows: 2,
 	opinionCount: 5,
-	expandedOpinionCount: 12,
+	expandedOpinionCount: 11,
 	latestCount: 5,
 	expandedLatestCount: 12,
 	investigationRows: 1,

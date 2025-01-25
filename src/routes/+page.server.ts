@@ -57,7 +57,6 @@ export const load = (async ({ cookies }) => {
 export const actions = {} satisfies Actions;
 
 function sortMultipleSources(tooOldThresholdHours: number, ...sources: RssPage[]): RssPage {
-	console.log('sources', sources);
 	const total: RssItem[] = [];
 	let thisRound: RssItem[] = [];
 	while (sources.find((source) => source.items.length > 0)) {

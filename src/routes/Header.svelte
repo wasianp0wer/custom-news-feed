@@ -11,13 +11,13 @@
 	let tabs: Tab[] = [
 		{ headerName: 'Investigations', route: '/investigations' },
 		{ headerName: 'Local', route: '/local' },
-		{ headerName: 'Politics', route: '/us-politics' },
-		{ headerName: 'World', route: '/world' },
+		// { headerName: 'Politics', route: '/us-politics' },
+		// { headerName: 'World', route: '/world' },
 		{ headerName: 'Opinions', route: '/opinions' },
 		{ headerName: 'Style', route: '/style' },
-		{ headerName: 'Entertainment', route: '/entertainment' },
+		{ headerName: 'Culture', route: '/entertainment' },
 		{ headerName: 'Sports', route: '/sports' },
-		{ headerName: 'The Moron Corner', route: '/morons' },
+		{ headerName: 'Moron Corner', route: '/morons' },
 		{ headerName: 'Comics and Games', route: '/justforfun' }
 	];
 </script>

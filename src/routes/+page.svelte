@@ -88,6 +88,11 @@
 	</div>
 </div>
 
+<svelte:head>
+	<title>Home - 2602 News</title>
+	<meta name="description" content="News for the 703, 571, and 202." />
+</svelte:head>
+
 <style>
 	.section-divider {
 		margin-top: 0.5em;
@@ -95,7 +100,7 @@
 	.stories {
 		display: grid;
 		gap: 20px;
-		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Flexible column sizes */
+		grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Flexible column sizes */
 		grid-auto-rows: minmax(150px, auto); /* Ensure rows have a consistent minimum height */
 		grid-auto-flow: dense; /* Allows grid items to fill empty spaces */
 	}
