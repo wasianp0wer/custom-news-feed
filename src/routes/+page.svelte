@@ -70,25 +70,25 @@
 			<Story {item} highlightTimeIfBreaking={index < 4} />
 		{/each}
 	</div>
-	<h1 class="section-divider">Top Investigations</h1>
+	<h1 class="section-divider"><a href="/investigations">Top Investigations</a> ➤</h1>
 	<div class="stories">
 		{#each investigationItems as item, index}
 			<Story {item} highlightTimeIfBreaking={true} />
 		{/each}
 	</div>
-	<h1 class="section-divider">Local</h1>
+	<h1 class="section-divider"><a href="/local">Local</a> ➤</h1>
 	<div class="stories">
 		{#each localItems as item, index}
 			<Story {item} highlightTimeIfBreaking={index < 3} />
 		{/each}
 	</div>
-	<h1 class="section-divider">Style</h1>
+	<h1 class="section-divider"><a href="/style">Style</a> ➤</h1>
 	<div class="stories">
 		{#each styleItems as item, index}
 			<Story {item} />
 		{/each}
 	</div>
-	<h1 class="section-divider">Culture</h1>
+	<h1 class="section-divider"><a href="/entertainment">Culture</a> ➤</h1>
 	<div class="stories">
 		{#each cultureItems as item, index}
 			<Story {item} highlightTimeIfBreaking={index < 3} />
@@ -102,14 +102,8 @@
 </svelte:head>
 
 <style>
-	.section-divider {
-		margin-top: 0.5em;
-	}
-	.stories {
-		display: grid;
-		gap: 20px;
-		grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Flexible column sizes */
-		grid-auto-rows: minmax(150px, auto); /* Ensure rows have a consistent minimum height */
-		grid-auto-flow: dense; /* Allows grid items to fill empty spaces */
+	h1 a {
+		color: var(--color-theme-1);
+		font-weight: normal;
 	}
 </style>

@@ -65,9 +65,6 @@
 </div>
 
 <style>
-	.section-divider {
-		margin-top: 0.5em;
-	}
 	.section {
 		display: grid;
 		gap: 20px;

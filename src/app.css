@@ -135,3 +135,14 @@ button:focus:not(:focus-visible) {
 	width: 1px;
 	white-space: nowrap;
 }
+
+.section-divider {
+  margin-top: 0.5em;
+}
+.stories {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Flexible column sizes */
+  grid-auto-rows: minmax(150px, auto); /* Ensure rows have a consistent minimum height */
+  grid-auto-flow: dense; /* Allows grid items to fill empty spaces */
+}

@@ -1,19 +1,46 @@
 <script lang="ts">
 	import Header from './Header.svelte';
 	import '../app.css';
+	import { onMount } from 'svelte';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import { fade } from 'svelte/transition';
+	import Loader from '../components/Loader.svelte';
 
 	let { children } = $props();
+
+	let enoughTimeElapsedSinceLoadStart = $state(false);
+
+	let finishedLoading = $state(true);
+
+	let showLoading = $derived.by(() => !finishedLoading && enoughTimeElapsedSinceLoadStart);
+
+	onMount(() => {
+		beforeNavigate(() => {
+			finishedLoading = false;
+			enoughTimeElapsedSinceLoadStart = false;
+			setTimeout(() => {
+				enoughTimeElapsedSinceLoadStart = true;
+			}, 250);
+		});
+
+		afterNavigate(() => {
+			finishedLoading = true;
+		});
+	});
 </script>
 
 <div class="app">
 	<Header />
 
 	<main>
-		{@render children()}
+		{#if showLoading}
+			<Loader />
+		{:else}
+			{@render children()}
+		{/if}
 	</main>
 
-	<footer>
-	</footer>
+	<footer></footer>
 </div>
 
 <style>
