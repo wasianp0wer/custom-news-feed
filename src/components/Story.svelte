@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { RssItem } from '../util/rss-parser';
-	import { StoryUtil } from '../util/story-util';
+	import { StoryUtil } from '../util/story.util';
 	import ByLine from './ByLine.svelte';
 	import Dateline from './Dateline.svelte';
 

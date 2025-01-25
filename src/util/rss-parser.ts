@@ -83,6 +83,12 @@ export class RssParser {
 			case 'Jacobin':
 				this.transformJacobin(xml);
 				break;
+			case 'Pearls Before Swine':
+			case 'Calvin and Hobbes':
+			case 'Garfield':
+			case 'FoxTrot Classics':
+				this.transformComic(xml);
+				break;
 		}
 	}
 
@@ -95,6 +101,17 @@ export class RssParser {
 			if (!((item.pubDate as any) instanceof Date)) {
 				item.pubDate = new Date(item.pubDate);
 			}
+		}
+	}
+
+	transformComic(xml: RssPage) {
+		for (let item of xml.items) {
+			item.source = RssSource.GO_COMICS;
+			const match = item.description.match(/<img[^>]*>/);
+			if (!match) {
+				continue;
+			}
+			item.content = match[0];
 		}
 	}
 
@@ -233,5 +250,6 @@ export enum RssSource {
 	VARIETY = 'Variety',
 	ARL_NOW = 'ARLnow',
 	FFX_NOW = 'FFXnow',
-	JACOBIN = 'Jacobin'
+	JACOBIN = 'Jacobin',
+	GO_COMICS = 'GoComics'
 }

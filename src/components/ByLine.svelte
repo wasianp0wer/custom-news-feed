@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { StoryUtil } from '../util/story-util';
+	import { StoryUtil } from '../util/story.util';
 	import Dateline from './Dateline.svelte';
 
 	interface Props {

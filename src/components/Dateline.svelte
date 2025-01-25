@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { StoryUtil, TimeUnit, type TimeAgo } from '../util/story-util';
+	import { StoryUtil, TimeUnit, type TimeAgo } from '../util/story.util';
 
 	interface Props {
 		publishedAt: Date;

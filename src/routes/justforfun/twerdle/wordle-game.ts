@@ -1,4 +1,4 @@
-import GameUtil from '../../../util/game-util';
+import GameUtil from '../../../util/game.util';
 import { allowed } from './words.server';
 import { words } from './words.server';
 

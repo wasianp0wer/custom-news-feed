@@ -1,6 +1,8 @@
+import DateUtil from './date.util';
+
 export default class GameUtil {
 	static getDailySeed(): number {
-		const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+		const today = DateUtil.getTimezoneDate('PST');
 		return Math.pow(today.getFullYear(), today.getDate() + 5) / (today.getMonth() + 1);
 	}
 }
