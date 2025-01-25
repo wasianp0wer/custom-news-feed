@@ -60,10 +60,15 @@
 	 * if client-side JavaScript is enabled
 	 */
 	function update(event: MouseEvent) {
-		console.log('am I also happening?');
 		event.preventDefault();
 		const key = (event.target as HTMLButtonElement).getAttribute('data-key');
+		if (key) {
+			updateByKey(key);
+		}
+	}
 
+	function updateByKey(key: string) {
+		key = key.toLowerCase();
 		if (key === 'backspace') {
 			currentGuess = currentGuess.slice(0, -1);
 			if (form?.badGuess) form.badGuess = false;
@@ -81,7 +86,11 @@
 
 		if (event.key === 'Enter' && !submittable) return;
 
-		document.querySelector(`[data-key="${event.key}" i]`)?.dispatchEvent(new MouseEvent('click', { cancelable: true }));
+		if (event.key === 'Enter') {
+			document.querySelector(`[data-key="${event.key}" i]`)?.dispatchEvent(new MouseEvent('click', { cancelable: true }));
+		} else {
+			updateByKey(event.key);
+		}
 	}
 
 	let showHowToPlay = $state(false);
@@ -214,7 +223,6 @@
 								data-key={letter}
 								class={classnames[letter]}
 								disabled={submittable}
-								formaction="?/update"
 								name="key"
 								value={letter}
 								aria-label="{letter} {description[letter] || ''}"

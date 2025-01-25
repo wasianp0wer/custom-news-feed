@@ -30,7 +30,6 @@ export const actions = {
 	 * is available, this will happen in the browser instead of here
 	 */
 	update: async ({ request, cookies }) => {
-		console.log('where am I happening?');
 		const game = new WordleGame(cookies.get('sverdle'));
 
 		const data = await request.formData();

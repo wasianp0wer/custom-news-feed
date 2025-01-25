@@ -1,5 +1,5 @@
 <div class="loader">
-	<img src="favicon.png" alt="Loading..." />
+	<img src="%sveltekit.assets%/favicon.png" alt="Loading..." />
 </div>
 
 <style>
