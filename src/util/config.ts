@@ -7,4 +7,5 @@ export interface LayoutConfig {
 	expandedLatestCount: number;
 	investigationRows: number;
 	styleRows: number;
+	cultureRows: number;
 }

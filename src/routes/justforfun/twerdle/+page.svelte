@@ -3,6 +3,7 @@
 	import { confetti } from '@neoconfetti/svelte';
 	import type { ActionData, PageData } from './$types';
 	import { reducedMotion } from './reduced-motion';
+	import { fade } from 'svelte/transition';
 
 	interface Props {
 		data: PageData;
@@ -83,6 +84,38 @@
 	}
 
 	let showHowToPlay = $state(false);
+
+	let showCopiedText = $state(false);
+
+	let scoreCopyable = $derived.by(() => {
+		let score = '';
+		for (let guess of data.guesses) {
+			if (!guess) continue;
+			for (let letter of guess) {
+				if (classnames[letter] === 'exact') {
+					score += '🟩';
+				} else if (classnames[letter] === 'close') {
+					score += '🟨';
+				} else {
+					score += '⬜';
+				}
+			}
+			score += '\n';
+		}
+		if (won) {
+			return `${score}I won Twerdle in ${data.answers.length} guesses! Can you beat me?`;
+		} else {
+			return `${score}I'm playing Twerdle on 2602news. Can you guess the word?`;
+		}
+	});
+
+	function copyScore() {
+		showCopiedText = true;
+		setTimeout(() => {
+			showCopiedText = false;
+		}, 3000);
+		navigator.clipboard.writeText(scoreCopyable);
+	}
 </script>
 
 <svelte:window onkeydown={keydown} />
@@ -92,7 +125,7 @@
 	<meta name="description" content="A Wordle clone for 2602news" />
 </svelte:head>
 
-<h1 class="visually-hidden">Sverdle</h1>
+<h1>Twerdle</h1>
 
 <form
 	method="post"
@@ -144,7 +177,7 @@
 			{#if !won && data.answer}
 				<p>the answer was "{data.answer}"</p>
 			{/if}
-			<button data-key="enter" class="restart selected" formaction="?/restart">
+			<button data-key="enter" class="restart selected" onclick={copyScore}>
 				{won ? 'You won :)' : `Game over :(`}
 				<br />
 				Share score?
@@ -177,6 +210,9 @@
 		{/if}
 	</div>
 </form>
+{#if showCopiedText}
+	<p transition:fade class="copied" style="">Score copied to clipboard.</p>
+{/if}
 
 {#if won}
 	<div
@@ -206,6 +242,13 @@
 		justify-content: center;
 		gap: 1rem;
 		flex: 1;
+	}
+
+	.copied {
+		position: absolute;
+		bottom: 10%;
+		left: 50%;
+		transform: translateX(-50%);
 	}
 
 	.how-to-play {
@@ -379,7 +422,6 @@
 		border: none;
 	}
 
-	.restart:focus,
 	.restart:hover {
 		background: var(--color-theme-1);
 		color: white;

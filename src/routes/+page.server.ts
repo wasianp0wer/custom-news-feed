@@ -35,22 +35,29 @@ export const load = (async ({ cookies }) => {
 			parser.parseUrl('https://theintercept.com/feed/').then((rss) => {
 				cache.set(CacheSource.INVESTIGATIVE, rss);
 			}),
-			parser.parseUrl('https://variety.com/feed/').then((rss) => {
-				cache.set(CacheSource.POP_CULTURE, rss);
-			})
+			parser.parseUrl('https://www.theguardian.com/us/lifeandstyle/rss').then((rss) => {
+				cache.set(CacheSource.STYLE, rss);
+			}),
+			await Promise.all([parser.parseUrl('https://variety.com/feed/'), parser.parseUrl('https://www.theguardian.com/us/culture/rss')]).then(
+				([variety, guardian]) => {
+					cache.set(CacheSource.POP_CULTURE, sortMultipleSources(6, variety, guardian));
+				}
+			)
 		]);
 	}
 	const newsFeed = cache.get(CacheSource.NEWS);
 	const localFeed = cache.get(CacheSource.LOCAL);
 	const guardianOpinionFeed = cache.get(CacheSource.OPINION);
 	const propublicaFeed = cache.get(CacheSource.INVESTIGATIVE);
-	const varietyFeed = cache.get(CacheSource.POP_CULTURE);
+	const cultureFeed = cache.get(CacheSource.POP_CULTURE);
+	const styleFeed = cache.get(CacheSource.STYLE);
 	return {
 		newsItems: newsFeed?.items ?? [],
 		localItems: localFeed?.items.slice(0, layoutConfig.localStoryRows * 3) ?? [],
 		opinionItems: guardianOpinionFeed?.items.slice(0, layoutConfig.expandedOpinionCount) ?? [],
 		investigativeItems: propublicaFeed?.items.slice(0, layoutConfig.investigationRows * 3) ?? [],
-		popCultureItems: varietyFeed?.items.slice(0, layoutConfig.styleRows * 3) ?? []
+		popCultureItems: cultureFeed?.items.slice(0, layoutConfig.cultureRows * 3) ?? [],
+		styleItems: styleFeed?.items.slice(0, layoutConfig.styleRows * 3) ?? []
 	};
 }) satisfies PageServerLoad;
 
@@ -86,5 +93,6 @@ enum CacheSource {
 	LOCAL = 'local',
 	OPINION = 'opinion',
 	INVESTIGATIVE = 'investigative',
-	POP_CULTURE = 'popCulture'
+	POP_CULTURE = 'popCulture',
+	STYLE = 'style'
 }

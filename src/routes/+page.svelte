@@ -52,7 +52,9 @@
 	let opinionItems = $derived.by(() => data.opinionItems.slice(0, opinionCount));
 	let localItems = $derived.by(() => data.localItems.slice(0, layoutConfig.localStoryRows * 3));
 	let investigationItems = $derived.by(() => data.investigativeItems.slice(0, layoutConfig.investigationRows * 3));
-	let styleRows = $derived.by(() => data.popCultureItems.slice(0, layoutConfig.styleRows * 3));
+	let styleItems = $derived.by(() => data.styleItems.slice(0, layoutConfig.styleRows * 3));
+
+	let cultureItems = $derived.by(() => data.popCultureItems.slice(0, layoutConfig.cultureRows * 3));
 
 	function onOpinionExpand(expanded: boolean) {
 		expandOpinion = expanded;
@@ -80,9 +82,15 @@
 			<Story {item} highlightTimeIfBreaking={index < 3} />
 		{/each}
 	</div>
-	<h1 class="section-divider">Style and Culture</h1>
+	<h1 class="section-divider">Style</h1>
 	<div class="stories">
-		{#each styleRows as item, index}
+		{#each styleItems as item, index}
+			<Story {item} />
+		{/each}
+	</div>
+	<h1 class="section-divider">Culture</h1>
+	<div class="stories">
+		{#each cultureItems as item, index}
 			<Story {item} highlightTimeIfBreaking={index < 3} />
 		{/each}
 	</div>

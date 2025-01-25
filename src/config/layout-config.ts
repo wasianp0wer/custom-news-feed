@@ -8,5 +8,6 @@ export const layoutConfig: LayoutConfig = {
 	latestCount: 5,
 	expandedLatestCount: 12,
 	investigationRows: 1,
-	styleRows: 2
+	styleRows: 1,
+	cultureRows: 2
 };

@@ -59,6 +59,8 @@ export class RssParser {
 	transformToConsistentFormat(xml: any) {
 		switch (xml.title) {
 			case 'The Guardian':
+			case 'Culture | The Guardian':
+			case 'Lifestyle | The Guardian':
 				this.transformGuardianXml(xml);
 				break;
 			case 'Opinion | The Guardian':
