@@ -27,22 +27,10 @@
 			finishedLoading = true;
 		});
 	});
-
-	let isOnMobile = $state(false);
-
-	onMount(() => {
-		isOnMobile = window.innerWidth < 768;
-		window.addEventListener('resize', () => {
-			console.log(window.innerWidth);
-			isOnMobile = window.innerWidth < 768;
-		});
-	});
 </script>
 
 <div class="app">
-	{#if !isOnMobile}
-		<Header />
-	{/if}
+	<Header />
 	<main>
 		{#if showLoading}
 			<Loader />

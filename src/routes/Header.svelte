@@ -152,4 +152,10 @@
 		background-color: var(--color-theme-3);
 		color: var(--color-text);
 	}
+
+	@media (max-width: 768px) {
+		header {
+			display: none;
+		}
+	}
 </style>
