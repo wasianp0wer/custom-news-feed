@@ -19,7 +19,7 @@
 			<div>A word deducing game based off the smash hit Wordle.</div>
 		</div>
 		<div class="game">
-			<h1><a>Sudoku</a></h1>
+			<h1><a href="/justforfun/sudoku">Sudoku</a></h1>
 			<br />
 			<div>Coming soon...</div>
 		</div>
@@ -27,28 +27,28 @@
 	<h1 class="section-divider">Comics</h1>
 	<div class="section">
 		{#if data.pearls}
-			<div class="game">
+			<div class="comic">
 				<h2>Pearls Before Swine</h2>
 				<h3>By Stephan Pastis</h3>
 				<div>{@html data.pearls.content}</div>
 			</div>
 		{/if}
 		{#if data.calvin}
-			<div class="game">
+			<div class="comic">
 				<h2>Calvin and Hobbes</h2>
 				<h3>By Bill Waterston</h3>
 				<div>{@html data.calvin.content}</div>
 			</div>
 		{/if}
 		{#if data.foxtrot}
-			<div class="game">
+			<div class="comic">
 				<h2>Foxtrot</h2>
 				<h3>By Bill Amend</h3>
 				<div>{@html data.foxtrot.content}</div>
 			</div>
 		{/if}
 		{#if data.garfield}
-			<div class="game">
+			<div class="comic">
 				<h2>Garfield</h2>
 				<h3>By Jim Davis</h3>
 				<div>{@html data.garfield.content}</div>
@@ -90,5 +90,16 @@
 	.game:hover {
 		transform: scale(var(--story-grow-factor));
 		border: 2px solid var(--color-theme-1);
+	}
+
+	.comic {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		padding: 20px;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		background-color: #fff;
+		height: 100%;
 	}
 </style>

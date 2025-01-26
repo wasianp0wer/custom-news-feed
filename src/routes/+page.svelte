@@ -1,10 +1,14 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Story from '../components/Story.svelte';
 	import StoryColumn from '../components/StoryColumn.svelte';
 	import TopStory from '../components/TopStory.svelte';
 	import { layoutConfig } from '../config/layout-config';
 	import type { LayoutConfig } from '../util/config';
 	import type { ActionData, PageData } from './$types';
+	import Header from './Header.svelte';
+	import { get } from 'svelte/store';
+	import type { RssItem } from '../util/rss-parser';
 
 	interface Props {
 		data: PageData;
@@ -12,9 +16,24 @@
 
 	let { data }: Props = $props();
 
-	let topStory = $derived.by(() => data.newsItems[0]);
+	let topStory = $derived.by(() => data.newsItems[0] ?? ({} as RssItem));
 
-	let topCategory = $derived.by(() => topStory.categories[0]);
+	let isOnMobile = $state(false);
+
+	onMount(() => {
+		isOnMobile = window.innerWidth < 768;
+		window.addEventListener('resize', () => {
+			console.log(window.innerWidth);
+			isOnMobile = window.innerWidth < 768;
+		});
+	});
+
+	let topCategory: string = $derived.by(() => {
+		if (!topStory) {
+			return '';
+		}
+		return topStory.categories[0];
+	});
 
 	let topThreeItemsAssociatedWithTopStory = $derived.by(() => {
 		return data.newsItems.filter((item) => item.categories.includes(topCategory)).slice(1, 4);
@@ -64,45 +83,90 @@
 </script>
 
 <div>
-	<div class="stories">
-		<TopStory item={topStory} nextThree={topThreeItemsAssociatedWithTopStory} {topStorySize} />
-		<StoryColumn items={opinionItems} align="right" title="Opinions" gridRow={1} link="/opinions" onExpand={onOpinionExpand} />
-		<StoryColumn items={latestItems} align="left" title="Latest" gridRow={2} includeExpand={false} />
-		{#each displayItems as item, index}
-			<Story {item} highlightTimeIfBreaking={index < 4} />
-		{/each}
-	</div>
-	<h1 class="section-divider"><a href="/investigations">Top Investigations</a> ➤</h1>
-	<div class="stories">
-		{#each investigationItems as item, index}
-			<Story {item} highlightTimeIfBreaking={true} />
-		{/each}
-	</div>
-	<h1 class="section-divider"><a href="/local">Local</a> ➤</h1>
-	<div class="stories">
-		{#each localItems as item, index}
-			<Story {item} highlightTimeIfBreaking={index < 3} />
-		{/each}
-	</div>
-	<h1 class="section-divider"><a href="/style">Style</a> ➤</h1>
-	<div class="stories">
-		{#each styleItems as item, index}
-			<Story {item} />
-		{/each}
-	</div>
-	<h1 class="section-divider"><a href="/sports">Sports</a> ➤</h1>
-	<div class="stories">
-		<!-- TODO: This can easily get clogged up by a big sports event, but it doesn't have categories. Chat GPT? -->
-		{#each sportsItems as item, index}
-			<Story {item} highlightTimeIfBreaking={index < 3} />
-		{/each}
-	</div>
-	<h1 class="section-divider"><a href="/entertainment">Culture</a> ➤</h1>
-	<div class="stories">
-		{#each cultureItems as item, index}
-			<Story {item} highlightTimeIfBreaking={index < 3} />
-		{/each}
-	</div>
+	{#if !isOnMobile}
+		<Header />
+		<div class="stories">
+			<TopStory item={topStory} nextThree={topThreeItemsAssociatedWithTopStory} {topStorySize} />
+			<StoryColumn items={opinionItems} align="right" title="Opinions" gridRow={1} link="/opinions" onExpand={onOpinionExpand} />
+			<StoryColumn items={latestItems} align="left" title="Latest" gridRow={2} includeExpand={false} />
+			{#each displayItems as item, index}
+				<Story {item} highlightTimeIfBreaking={index < 4} />
+			{/each}
+		</div>
+		<h1 class="section-divider"><a href="/investigations">Top Investigations</a> ➤</h1>
+		<div class="stories">
+			{#each investigationItems as item, index}
+				<Story {item} highlightTimeIfBreaking={true} />
+			{/each}
+		</div>
+		<h1 class="section-divider"><a href="/local">Local</a> ➤</h1>
+		<div class="stories">
+			{#each localItems as item, index}
+				<Story {item} highlightTimeIfBreaking={index < 3} />
+			{/each}
+		</div>
+		<h1 class="section-divider"><a href="/style">Style</a> ➤</h1>
+		<div class="stories">
+			{#each styleItems as item, index}
+				<Story {item} />
+			{/each}
+		</div>
+		<h1 class="section-divider"><a href="/sports">Sports</a> ➤</h1>
+		<div class="stories">
+			<!-- TODO: This can easily get clogged up by a big sports event, but it doesn't have categories. Chat GPT? -->
+			{#each sportsItems as item, index}
+				<Story {item} highlightTimeIfBreaking={index < 3} />
+			{/each}
+		</div>
+		<h1 class="section-divider"><a href="/entertainment">Culture</a> ➤</h1>
+		<div class="stories">
+			{#each cultureItems as item, index}
+				<Story {item} highlightTimeIfBreaking={index < 3} />
+			{/each}
+		</div>
+	{:else}
+		<div class="stories-mobile">
+			<TopStory item={topStory} nextThree={topThreeItemsAssociatedWithTopStory} topStorySize={1} />
+			{#each displayItems.slice(0, 3) as item, index}
+				<Story {item} isLastMobile={index === 2} highlightTimeIfBreaking={index < 4} />
+			{/each}
+		</div>
+		<h1 class="section-divider"><a href="/investigations">Top Investigations</a> ➤</h1>
+		<div class="stories-mobile">
+			<TopStory item={investigationItems[0]} nextThree={[]} topStorySize={1} />
+			{#each investigationItems.slice(1, 3) as item, index}
+				<Story {item} isLastMobile={index === 1} highlightTimeIfBreaking={true} />
+			{/each}
+		</div>
+		<h1 class="section-divider"><a href="/local">Local</a> ➤</h1>
+		<div class="stories-mobile">
+			<TopStory item={localItems[0]} nextThree={[]} topStorySize={1} />
+			{#each localItems.slice(1, 4) as item, index}
+				<Story {item} isLastMobile={index === 2} highlightTimeIfBreaking={true} />
+			{/each}
+		</div>
+		<h1 class="section-divider"><a href="/style">Style</a> ➤</h1>
+		<div class="stories-mobile">
+			<TopStory item={styleItems[0]} nextThree={[]} topStorySize={1} />
+			{#each styleItems.slice(1, 3) as item, index}
+				<Story {item} isLastMobile={index === 1} highlightTimeIfBreaking={true} />
+			{/each}
+		</div>
+		<h1 class="section-divider"><a href="/sports">Sports</a> ➤</h1>
+		<div class="stories-mobile">
+			<TopStory item={sportsItems[0]} nextThree={[]} topStorySize={1} />
+			{#each sportsItems.slice(1, 3) as item, index}
+				<Story {item} isLastMobile={index === 1} highlightTimeIfBreaking={true} />
+			{/each}
+		</div>
+		<h1 class="section-divider"><a href="/entertainment">Culture</a> ➤</h1>
+		<div class="stories-mobile">
+			<TopStory item={cultureItems[0]} nextThree={[]} topStorySize={1} />
+			{#each cultureItems.slice(1, 3) as item, index}
+				<Story {item} isLastMobile={index === 1} highlightTimeIfBreaking={true} />
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <svelte:head>

@@ -30,8 +30,6 @@
 </script>
 
 <div class="app">
-	<Header />
-
 	<main>
 		{#if showLoading}
 			<Loader />

@@ -13,9 +13,17 @@
 
 	let { item, nextThree, topStorySize }: Props = $props();
 
-	let mainCategory = $derived.by(() => item.categories[0]);
+	let mainCategory = $derived.by(() => {
+		if (!item) {
+			return '';
+		}
+		return item.categories[0];
+	});
 
 	let thumbnail = $derived.by(() => {
+		if (!item) {
+			return undefined;
+		}
 		if (item.media_content.length > 0) {
 			return item.media_content[0];
 		}
@@ -24,7 +32,17 @@
 </script>
 
 {#if topStorySize === 1}
-	<Story {item} />
+	<div class="story">
+		<div class="headline"><h2><a href={item.link} target="_blank">{@html item.title}</a></h2></div>
+		<!-- TODO: Need to be able to click anywhere in the headline to go to link -->
+		<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} />
+		{#if thumbnail}
+			<img src={thumbnail.url} width={thumbnail.width} alt="sorry" />
+		{/if}
+		<div class="description">{@html item.description}</div>
+		<!-- <a class="continue" href="/story/{item.item_id}">Continue reading...</a> -->
+		<small>Source: {item.source}</small>
+	</div>
 {:else}
 	<div class="first story" style="grid-column: span {topStorySize};">
 		<div class="redlabel"><a class="redlabel-text" href="/category/{mainCategory}">{mainCategory}</a></div>
@@ -140,5 +158,11 @@
 
 	.substory:hover {
 		text-decoration: underline;
+	}
+	/* Media Query for Mobile */
+	@media (hover: none) and (pointer: coarse), (max-width: 768px) {
+		.story {
+			border-radius: 8px 8px 0px 0px;
+		}
 	}
 </style>
