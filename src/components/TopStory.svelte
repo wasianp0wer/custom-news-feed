@@ -164,5 +164,13 @@
 		.story {
 			border-radius: 8px 8px 0px 0px;
 		}
+		a:hover {
+			text-decoration: none; /* Example: Remove hover underline from links */
+			color: inherit; /* Keep link color consistent */
+		}
+		.story:hover {
+			transform: none; /* Remove the hover scaling effect */
+			border: inherit; /* Remove the hover border */
+		}
 	}
 </style>
