@@ -41,7 +41,9 @@ export class RssParser {
 	}
 
 	checkArrayFields(xml: RssPage) {
-		if (!Array.isArray(xml.items)) {
+		if (!xml.items && (xml as any).entry) {
+			xml.items = (xml as any).entry;
+		} else if (!Array.isArray(xml.items)) {
 			xml.items = [xml.items];
 		}
 		if ((xml.title as any) instanceof Object) {
@@ -100,7 +102,15 @@ export class RssParser {
 	validate(xml: RssPage) {
 		for (let item of xml.items) {
 			item.description = item.description.trim();
-			if (!item.description.endsWith('.')) {
+			if (
+				!(
+					item.description.endsWith('.') ||
+					item.description.endsWith('!') ||
+					item.description.endsWith('?') ||
+					item.description.endsWith('”') ||
+					item.description.endsWith('"')
+				)
+			) {
 				item.description += '.';
 			}
 			if (!((item.pubDate as any) instanceof Date)) {
@@ -157,7 +167,7 @@ export class RssParser {
 	transformVariety(xml: RssPage) {
 		for (let item of xml.items) {
 			item.source = RssSource.VARIETY;
-			const match = item.description.match(/[a-z]\.( |$)/);
+			const match = item.description.match(/[a-z]\.( |\"|\”|$)/);
 			if (match) {
 				item.description = item.description.split(match[0])[0] + match[0];
 			}
@@ -180,10 +190,29 @@ export class RssParser {
 		}
 	}
 
+	jacobinImageRegex = /(?:src)\s*=\s*["']([^"']+)["']/g;
+
 	transformJacobin(xml: RssPage) {
+		xml.items = (xml as any).entry;
 		xml.items.forEach((item: RssItem) => {
+			item.description = (item as any).summary['#text'];
+			if ((item as any).author instanceof Array) {
+				item.dc_creator = (item as any).author.map((a: any) => a.name).join(', ');
+			} else {
+				item.dc_creator = (item as any).author?.name ?? '';
+			}
+			item.content = ((item as any).content ?? {})['#text'] ?? '';
+			const matches = item.content.matchAll(this.jacobinImageRegex);
+			item.media_content = Array.from(matches, (match) => ({ url: match[1], media_credit: '', width: 0 }));
+			item.pubDate = new Date((item as any).published);
+			item.title = (item as any).title['#text'];
 			item.source = RssSource.JACOBIN;
 			item.categories.push('Opinion');
+			item.link = (item as any).link['href'];
+			const match = item.description.match(/[a-z]\.( |\"|\”|$)/);
+			if (match) {
+				item.description = item.description.split(match[0])[0] + match[0];
+			}
 		});
 	}
 

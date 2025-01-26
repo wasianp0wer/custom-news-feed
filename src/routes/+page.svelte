@@ -84,7 +84,6 @@
 
 <div>
 	{#if !isOnMobile}
-		<Header />
 		<div class="stories">
 			<TopStory item={topStory} nextThree={topThreeItemsAssociatedWithTopStory} {topStorySize} />
 			<StoryColumn items={opinionItems} align="right" title="Opinions" gridRow={1} link="/opinions" onExpand={onOpinionExpand} />

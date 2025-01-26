@@ -26,12 +26,11 @@ export const load = (async ({ cookies }) => {
 				};
 				cache.set(CacheSource.LOCAL, sortMultipleSources(24, localGuardian, fiftyFirst, arlNow, ffxNow));
 			}),
-			await Promise.all([
-				parser.parseUrl('https://www.theguardian.com/us/commentisfree/rss')
-				// parser.parseUrl('https://jacobin.com/feed/')
-			]).then(([guardian]) => {
-				cache.set(CacheSource.OPINION, sortMultipleSources(6, guardian));
-			}),
+			await Promise.all([parser.parseUrl('https://www.theguardian.com/us/commentisfree/rss'), parser.parseUrl('https://jacobin.com/feed/')]).then(
+				([guardian, jacobin]) => {
+					cache.set(CacheSource.OPINION, sortMultipleSources(6, guardian, jacobin));
+				}
+			),
 			parser.parseUrl('https://theintercept.com/feed/').then((rss) => {
 				cache.set(CacheSource.INVESTIGATIVE, rss);
 			}),
