@@ -153,3 +153,11 @@ button:focus:not(:focus-visible) {
   grid-auto-rows: minmax(50px, auto); /* Ensure rows have a consistent minimum height */
   grid-auto-flow: dense; /* Allows grid items to fill empty spaces */
 }
+
+
+@media (max-width: 768px) {
+  .stories {
+    grid-template-columns: repeat(1, minmax(100px, 1fr)); /* Flexible column sizes */
+    gap: 0px;
+  }
+}
