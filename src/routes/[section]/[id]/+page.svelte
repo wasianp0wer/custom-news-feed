@@ -14,7 +14,7 @@
 	<p>Hmmmm, something went wrong. We can't seem to find that story.</p>
 {:else}
 	<div class="inset-story">
-		<small>Sourced: {data.item.source}</small>
+		<small>Source: {data.item.source}</small>
 		<h1 class="story-title">{data.item.title}</h1>
 		<h3 class="story-byline">By <span class="author">{data.item.dc_creator}</span></h3>
 		<div class="story-content">{@html data.item.content}</div>
