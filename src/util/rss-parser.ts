@@ -189,6 +189,8 @@ export class RssParser {
 				item.dc_creator = (item.dc_creator as any).join(', ');
 			}
 			item.description = item.description.split('<p>')[1].split('</p>')[0];
+			// item.link = `/investigative/${item.id}`;
+			// item.content = (item as any).content_encoded;
 			item.source = RssSource.THEINTERCEPT;
 		}
 	}

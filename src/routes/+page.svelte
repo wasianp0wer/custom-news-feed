@@ -56,7 +56,7 @@
 
 	let displayItems = $derived.by(() =>
 		StoryUtil.sortMultipleSources(
-			1,
+			36,
 			{ items: data.newsItems.slice(1).filter((item) => !item.categories.includes(topCategory)) } as RssPage,
 			{ items: investigationItems } as RssPage
 		).items.slice(0, layoutConfig.newStoryRows * 3 - 2 - (expandOpinion ? 1 : 0) + (3 - topStorySize))
