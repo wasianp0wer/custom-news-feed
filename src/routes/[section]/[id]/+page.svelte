@@ -14,6 +14,7 @@
 	<p>Hmmmm, something went wrong. We can't seem to find that story.</p>
 {:else}
 	<div class="inset-story">
+		<small>Sourced: {data.item.source}</small>
 		<h1 class="story-title">{data.item.title}</h1>
 		<h3 class="story-byline">By <span class="author">{data.item.dc_creator}</span></h3>
 		<div class="story-content">{@html data.item.content}</div>
@@ -38,6 +39,7 @@
 	}
 
 	.inset-story {
+		position: relative;
 		width: 90%;
 		align-self: center;
 		min-width: 10em;
@@ -55,6 +57,14 @@
 			linear-gradient(to right, transparent, black 1%, black 99%, transparent);
 		mask-composite: intersect;
 		-webkit-mask-composite: destination-in; /* For WebKit browsers */
+	}
+
+	.inset-story small {
+		position: absolute;
+		font-size: 0.8rem;
+		color: #777;
+		top: 10px;
+		right: 10px;
 	}
 
 	.author {
