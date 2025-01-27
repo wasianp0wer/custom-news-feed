@@ -38,7 +38,7 @@
 	}
 
 	.inset-story {
-		width: 85%;
+		width: 90%;
 		align-self: center;
 		min-width: 10em;
 		background-color: #f5f5f5;
