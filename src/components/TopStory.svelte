@@ -33,7 +33,7 @@
 
 {#if topStorySize === 1}
 	<div class="story">
-		<div class="headline"><h2><a href={item.link} target="_blank">{@html item.title}</a></h2></div>
+		<div class="headline"><h2><a href={item.link} target={item.link.startsWith('/') ? undefined : '_blank'}>{@html item.title}</a></h2></div>
 		<!-- TODO: Need to be able to click anywhere in the headline to go to link -->
 		<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} />
 		{#if thumbnail}
@@ -45,7 +45,7 @@
 {:else}
 	<div class="first story" style="grid-column: span {topStorySize};">
 		<div class="redlabel"><a class="redlabel-text" href="/category/{mainCategory}">{mainCategory}</a></div>
-		<h1><a href={item.link} target="_blank">{item.title}</a></h1>
+		<h1><a href={item.link} target={item.link.startsWith('/') ? undefined : '_blank'}>{item.title}</a></h1>
 		<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} />
 
 		<div class="content">
@@ -58,7 +58,7 @@
 				</div>
 				{#each nextThree as next}
 					<hr />
-					<h3 class="substory"><a href={next.link} target="_blank">{next.title}</a></h3>
+					<h3 class="substory"><a href={next.link} target={item.link.startsWith('/') ? undefined : '_blank'}>{next.title}</a></h3>
 				{/each}
 				<hr />
 			</div>

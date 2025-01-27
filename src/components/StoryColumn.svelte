@@ -50,7 +50,7 @@
 			<div class="item">
 				<hr class="divider" />
 				<div class="story">
-					<h3><a href={item.link} target="_blank">{@html item.title}</a></h3>
+					<h3><a href={item.link} target={item.link.startsWith('/') ? undefined : '_blank'}>{@html item.title}</a></h3>
 					<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} breakingMinutes={60} />
 				</div>
 			</div>
