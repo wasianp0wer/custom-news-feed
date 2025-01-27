@@ -40,7 +40,6 @@
 			<img src={thumbnail.url} width={thumbnail.width} alt="sorry" />
 		{/if}
 		<div class="description">{@html item.description}</div>
-		<!-- <a class="continue" href="/story/{item.item_id}">Continue reading...</a> -->
 		<small>Source: {item.source}</small>
 	</div>
 {:else}
@@ -52,12 +51,10 @@
 		<div class="content">
 			{#if thumbnail}
 				<img src={thumbnail.url} alt="sorry" style="width: {thumbnail.width}px" />
-				<!-- <img src={thumbnail.url} alt="sorry" style="width: 50%;" /> -->
 			{/if}
 			<div class="description">
 				<div>
 					{@html item.description}
-					<!-- <a class="continue" href="/story/{item.item_id}">Continue reading...</a> -->
 				</div>
 				{#each nextThree as next}
 					<hr />

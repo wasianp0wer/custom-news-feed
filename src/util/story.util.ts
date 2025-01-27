@@ -22,6 +22,15 @@ export class StoryUtil {
 		const diffInDays = Math.floor(diffInHours / 24);
 		return { value: diffInDays, unit: TimeUnit.DAY };
 	}
+
+	static hashObject(obj: any): string {
+		const jsonString = JSON.stringify(obj);
+		let hash = 5381;
+		for (let i = 0; i < jsonString.length; i++) {
+			hash = (hash * 33) ^ jsonString.charCodeAt(i);
+		}
+		return (hash >>> 0).toString(); // Ensure the hash is a positive integer
+	}
 }
 
 export interface TimeAgo {

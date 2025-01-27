@@ -47,6 +47,30 @@ h4 {
 	font-family: var(--font-body);
 }
 
+
+.story-content h3 {
+  font-size: 1.25rem;
+	text-align: center;
+	padding-bottom: 0.5rem;
+	margin-bottom: 1rem;
+}
+
+.story-content img {
+  width: 100%;
+}
+
+.story-content p {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.story-content figcaption {
+  font-size: 0.8rem;
+  text-align: center;
+  color: var(--color-theme-2);
+}
+
 a {
 	color: var(--color-theme-1);
 	text-decoration: none;

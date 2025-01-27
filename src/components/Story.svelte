@@ -28,7 +28,6 @@
 		<img src={thumbnail.url} width={thumbnail.width} alt="sorry" />
 	{/if}
 	<div class="description">{@html item.description}</div>
-	<!-- <a class="continue" href="/story/{item.item_id}">Continue reading...</a> -->
 	<small>Source: {item.source}</small>
 </div>
 

@@ -1,4 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
+import { v4 as uuidv4 } from 'uuid';
+import { StoryUtil } from './story.util';
 
 export class RssParser {
 	xmlOptions = {
@@ -54,6 +56,7 @@ export class RssParser {
 				if (!Array.isArray((item as any)[field])) {
 					(item as any)[field] = [(item as any)[field]];
 				}
+				item.id = StoryUtil.hashObject({ title: item.title });
 			}
 		}
 	}
@@ -208,7 +211,7 @@ export class RssParser {
 			item.title = (item as any).title['#text'];
 			item.source = RssSource.JACOBIN;
 			item.categories.push('Opinion');
-			item.link = (item as any).link['href'];
+			item.link = `/opinions/${item.id}`;
 			const match = item.description.match(/[a-z]\.( |\"|\”|$)/);
 			if (match) {
 				item.description = item.description.split(match[0])[0] + match[0];
@@ -264,7 +267,7 @@ export interface RssPage {
 }
 
 export interface RssItem {
-	item_id: string;
+	id: string;
 	title: string;
 	description: string;
 	link: string;
