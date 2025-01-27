@@ -54,6 +54,11 @@
 		background-color: var(--color-bg-0);
 		border-bottom: 2px solid var(--color-theme-1);
 		padding: 0.5rem 1rem;
+		position: fixed;
+		top: 0;
+		width: 100%;
+		max-height: 64px;
+		z-index: 1000;
 	}
 
 	.corner {

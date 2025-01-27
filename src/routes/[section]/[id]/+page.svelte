@@ -15,8 +15,8 @@
 {:else}
 	<div class="inset-story">
 		<small>Source: {data.item.source}</small>
-		<h1 class="story-title">{data.item.title}</h1>
-		<h3 class="story-byline">By <span class="author">{data.item.dc_creator}</span></h3>
+		<h1 class="story-title">{@html data.item.title}</h1>
+		<h3 class="story-byline">By <span class="author">{@html data.item.dc_creator}</span></h3>
 		<div class="story-content">{@html data.item.content}</div>
 	</div>
 {/if}

@@ -60,6 +60,7 @@
 					<hr />
 					<h3 class="substory"><a href={next.link} target="_blank">{next.title}</a></h3>
 				{/each}
+				<hr />
 			</div>
 		</div>
 		<small>Source: {item.source}</small>

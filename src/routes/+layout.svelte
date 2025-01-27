@@ -54,6 +54,7 @@
 		display: flex;
 		flex-direction: column;
 		padding: 1rem;
+		padding-top: calc(64px + 1rem);
 		width: 100%;
 		max-width: 75rem;
 		margin: 0 auto;
