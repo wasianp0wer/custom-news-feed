@@ -8,7 +8,8 @@
 	import type { ActionData, PageData } from './$types';
 	import Header from './Header.svelte';
 	import { get } from 'svelte/store';
-	import type { RssItem } from '../util/rss-parser';
+	import type { RssItem, RssPage } from '../util/rss-parser';
+	import { StoryUtil } from '../util/story.util';
 
 	interface Props {
 		data: PageData;
@@ -51,15 +52,26 @@
 
 	let expandOpinion = $state(false);
 
+	let investigationItems = $derived.by(() => data.investigativeItems.slice(0, layoutConfig.investigationRows * 3));
+
 	let displayItems = $derived.by(() =>
-		data.newsItems
-			.slice(1)
-			.filter((item) => !item.categories.includes(topCategory))
-			.slice(0, layoutConfig.newStoryRows * 3 - 2 - (expandOpinion ? 1 : 0) + (3 - topStorySize))
+		StoryUtil.sortMultipleSources(
+			1,
+			{ items: data.newsItems.slice(1).filter((item) => !item.categories.includes(topCategory)) } as RssPage,
+			{ items: investigationItems } as RssPage
+		).items.slice(0, layoutConfig.newStoryRows * 3 - 2 - (expandOpinion ? 1 : 0) + (3 - topStorySize))
 	);
 
 	let latestItems = $derived.by(() =>
-		data.newsItems
+		[
+			...data.newsItems,
+			...data.investigativeItems,
+			...data.opinionItems,
+			...data.localItems,
+			...data.styleItems,
+			...data.sportsItems,
+			...data.popCultureItems
+		]
 			.slice(1)
 			.filter((item) => !displayItems.includes(item))
 			.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
@@ -70,7 +82,6 @@
 
 	let opinionItems = $derived.by(() => data.opinionItems.slice(0, opinionCount));
 	let localItems = $derived.by(() => data.localItems.slice(0, layoutConfig.localStoryRows * 3));
-	let investigationItems = $derived.by(() => data.investigativeItems.slice(0, layoutConfig.investigationRows * 3));
 	let styleItems = $derived.by(() => data.styleItems.slice(0, layoutConfig.styleRows * 3));
 	let sportsItems = $derived.by(() =>
 		data.sportsItems.filter((item) => !item.description.toLowerCase().includes('how to watch')).slice(0, layoutConfig.sportsRows * 3)
@@ -92,12 +103,12 @@
 				<Story {item} highlightTimeIfBreaking={index < 4} />
 			{/each}
 		</div>
-		<h1 class="section-divider"><a href="/investigations">Top Investigations</a> ➤</h1>
+		<!-- <h1 class="section-divider"><a href="/investigations">Top Investigations</a> ➤</h1>
 		<div class="stories">
 			{#each investigationItems as item, index}
 				<Story {item} highlightTimeIfBreaking={true} />
 			{/each}
-		</div>
+		</div> -->
 		<h1 class="section-divider"><a href="/local">Local</a> ➤</h1>
 		<div class="stories">
 			{#each localItems as item, index}
@@ -130,13 +141,13 @@
 				<Story {item} isLastMobile={index === 2} highlightTimeIfBreaking={index < 4} />
 			{/each}
 		</div>
-		<h1 class="section-divider"><a href="/investigations">Top Investigations</a> ➤</h1>
+		<!-- <h1 class="section-divider"><a href="/investigations">Top Investigations</a> ➤</h1>
 		<div class="stories-mobile">
 			<TopStory item={investigationItems[0]} nextThree={[]} topStorySize={1} />
 			{#each investigationItems.slice(1, 3) as item, index}
 				<Story {item} isLastMobile={index === 1} highlightTimeIfBreaking={true} />
 			{/each}
-		</div>
+		</div> -->
 		<h1 class="section-divider"><a href="/local">Local</a> ➤</h1>
 		<div class="stories-mobile">
 			<TopStory item={localItems[0]} nextThree={[]} topStorySize={1} />

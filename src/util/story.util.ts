@@ -1,3 +1,5 @@
+import type { RssItem, RssPage } from './rss-parser';
+
 export class StoryUtil {
 	static byLinePrefix(byline: string) {
 		const words = byline.toLowerCase().split(' ');
@@ -30,6 +32,31 @@ export class StoryUtil {
 			hash = (hash * 33) ^ jsonString.charCodeAt(i);
 		}
 		return (hash >>> 0).toString(); // Ensure the hash is a positive integer
+	}
+
+	static sortMultipleSources(tooOldThresholdHours: number, ...sources: RssPage[]): RssPage {
+		const total: RssItem[] = [];
+		let thisRound: RssItem[] = [];
+		while (sources.find((source) => source.items.length > 0)) {
+			for (let source of sources) {
+				if (source.items.length > 0) {
+					thisRound.push(source.items.shift()!);
+				}
+			}
+			thisRound.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+			if (thisRound.length === 0) {
+				break;
+			}
+			const first = thisRound.shift()!;
+			total.push(first);
+			for (let item of thisRound) {
+				if (first.pubDate.getTime() < item.pubDate.getTime() + tooOldThresholdHours * 3600000) {
+					total.push(item);
+				}
+			}
+			thisRound = thisRound.filter((item) => !total.includes(item));
+		}
+		return { items: total } as RssPage;
 	}
 }
 

@@ -13,6 +13,11 @@ export const load: PageServerLoad = async ({ parent }) => {
 		popCultureItems: parentData.popCultureItems.slice(0, layoutConfig.cultureRows * 3) ?? [],
 		styleItems: parentData.styleItems.slice(0, layoutConfig.styleRows * 3) ?? [],
 		sportsItems:
-			parentData.sportsItems.filter((item) => !item.description.toLowerCase().includes('how to watch')).slice(0, layoutConfig.sportsRows * 3) ?? []
+			parentData.sportsItems
+				.filter((item) => {
+					const desc = item.description.toLowerCase();
+					return desc.includes('how to watch') || desc.includes('where to watch');
+				})
+				.slice(0, layoutConfig.sportsRows * 3) ?? []
 	};
 };
