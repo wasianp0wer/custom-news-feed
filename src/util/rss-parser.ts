@@ -213,12 +213,14 @@ export class RssParser {
 			item.title = (item as any).title['#text'];
 			item.source = RssSource.JACOBIN;
 			item.categories.push('Opinion');
-			item.link = `/opinions/${item.id}`;
+			item.link = item.content ? `/opinions/${item.id}` : (item.link as any).href;
 			const match = item.description.match(/[a-z]\.( |\"|\”|$)/);
 			if (match) {
 				item.description = item.description.split(match[0])[0] + match[0];
 			}
 		});
+
+		xml.items = xml.items.filter((item: RssItem) => item.content);
 	}
 
 	transformGuardianOpinionXml(xml: RssPage) {
