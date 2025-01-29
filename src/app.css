@@ -84,6 +84,7 @@ h4 {
 
 .story-content dt {
   font-weight: bold;
+  text-decoration: underline ;
 }
 
 a {
