@@ -83,9 +83,7 @@
 	let opinionItems = $derived.by(() => data.opinionItems.slice(0, opinionCount));
 	let localItems = $derived.by(() => data.localItems.slice(0, layoutConfig.localStoryRows * 3));
 	let styleItems = $derived.by(() => data.styleItems.slice(0, layoutConfig.styleRows * 3));
-	let sportsItems = $derived.by(() =>
-		data.sportsItems.filter((item) => !item.description.toLowerCase().includes('how to watch')).slice(0, layoutConfig.sportsRows * 3)
-	);
+	let sportsItems = $derived.by(() => data.sportsItems.slice(0, layoutConfig.sportsRows * 3));
 	let cultureItems = $derived.by(() => data.popCultureItems.slice(0, layoutConfig.cultureRows * 3));
 
 	function onOpinionExpand(expanded: boolean) {

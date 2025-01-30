@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 			parentData.sportsItems
 				.filter((item) => {
 					const desc = item.description.toLowerCase();
-					return desc.includes('how to watch') || desc.includes('where to watch');
+					return !desc.includes('how to watch') && !desc.includes('where to watch');
 				})
 				.slice(0, layoutConfig.sportsRows * 3) ?? []
 	};
