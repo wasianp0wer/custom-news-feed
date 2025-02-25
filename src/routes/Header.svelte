@@ -20,28 +20,39 @@
 		// { headerName: 'Moron Corner', route: '/morons' },
 		{ headerName: 'Comics and Games', route: '/justforfun' }
 	];
+
+	let isSidebarOpen = false;
+
+	function toggleSidebar() {
+		isSidebarOpen = !isSidebarOpen;
+	}
 </script>
 
 <header>
-	<div class="corner"></div>
+	<div class="corner">
+		<!-- <button class="menu-toggle" on:click={toggleSidebar}>
+			{#if isSidebarOpen}
+				Close
+			{:else}
+				Menu
+			{/if}
+		</button> -->
+	</div>
 
-	<nav>
-		<!-- <svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg> -->
+	<button on:click={toggleSidebar} class="menu-toggle">
+		<img class="logo" src="/favicon.png" alt="2602news logo." />
+	</button>
+	<nav class:is-open={isSidebarOpen}>
 		<ul>
 			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-				<a href={'/'}>Home</a>
+				<a href={'/'} on:click={() => (isSidebarOpen = false)}>Home</a>
 			</li>
 			{#each tabs as tab}
 				<li aria-current={$page.url.pathname === tab.route ? 'page' : undefined}>
-					<a href={tab.route}>{tab.headerName}</a>
+					<a href={tab.route} on:click={() => (isSidebarOpen = false)}>{tab.headerName}</a>
 				</li>
 			{/each}
 		</ul>
-		<!-- <svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg> -->
 	</nav>
 
 	<div class="corner"></div>
@@ -86,6 +97,25 @@
 		background-color: var(--color-text);
 		border-radius: 10px;
 		box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	nav.is-open {
+		display: block;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(1, 1, 1, 0.5);
+		z-index: 999;
+	}
+
+	.logo {
+		display: none;
+	}
+
+	.menu-toggle {
+		display: none;
 	}
 
 	svg {
@@ -160,7 +190,49 @@
 
 	@media (max-width: 768px) {
 		header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		nav {
 			display: none;
+			flex-direction: column;
+			align-items: center;
+			width: 100%;
+			height: 100%;
+			background-color: var(--color-bg-0);
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 999;
+		}
+
+		nav.is-open {
+			display: flex;
+		}
+		.menu-toggle {
+			display: block;
+			z-index: 1000;
+			background-color: transparent;
+			border: none;
+		}
+
+		.logo {
+			display: block;
+			max-height: 48px;
+			aspect-ratio: 1/1;
+		}
+
+		ul {
+			flex-direction: column;
+			padding: 0;
+			margin: 0;
+			height: auto;
+		}
+
+		li {
+			margin: 1em 0;
 		}
 	}
 </style>

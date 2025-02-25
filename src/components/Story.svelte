@@ -53,12 +53,12 @@
 
 	.headline {
 		font-weight: bold;
-		color: var(--color-theme-1); /* Set the initial color */
+		color: var(--color-theme-1);
 		cursor: pointer;
 	}
 
 	.headline:hover a {
-		color: var(--color-theme-5); /* Change the color of the link on hover */
+		color: var(--color-theme-5);
 	}
 
 	.story h2 a {
