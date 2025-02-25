@@ -214,12 +214,14 @@
 			{#if !won && data.answer}
 				<p>the answer was "{data.answer}"</p>
 			{/if}
-			<button class="restart selected" onclick={copyScore}>
-				{won ? 'You won :)' : `Game over :(`}
-				<br />
-				Share score?
-			</button>
-			<button data-key="enter" class="restart selected" formaction="?/restart"> Restart? </button>
+			<div class="button-container">
+				<button class="restart selected" onclick={copyScore}>
+					{won ? 'You won :)' : `Game over :(`}
+					<br />
+					Share score?
+				</button>
+				<button data-key="enter" class="restart selected" formaction="?/restart"> Restart? </button>
+			</div>
 		{:else}
 			<div class="keyboard">
 				<button data-key="enter" onclick={checkwin} class:selected={submittable} disabled={!submittable}>enter</button>
@@ -534,5 +536,16 @@
 	}
 	.how-to-play-dialog button:hover {
 		background: var(--color-theme-2);
+	}
+
+	.button-container {
+		display: flex;
+		gap: 1rem;
+		justify-content: center;
+	}
+
+	.button-container .restart {
+		flex: 1;
+		width: 9em;
 	}
 </style>
