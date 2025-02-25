@@ -1,6 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { WordleGame } from './wordle-game';
+import DateUtil from '../../../util/date.util';
 
 export const load = (({ cookies }) => {
 	const game = new WordleGame(cookies.get('sverdle'));
@@ -47,7 +48,9 @@ export const actions = {
 		const guess = data.getAll('guess') as string[];
 		game.isCurrentGuessWinning = game.enter(guess);
 
-		cookies.set('sverdle', game.toString(), { path: '/' });
+		const timeToMidnight = DateUtil.getTimezoneDate('EST').setUTCHours(24, 0, 0, 0) - DateUtil.getTimezoneDate('EST').getTime();
+
+		cookies.set('sverdle', game.toString(), { path: '/', maxAge: timeToMidnight });
 	},
 
 	/**

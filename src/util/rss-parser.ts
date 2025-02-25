@@ -214,6 +214,13 @@ export class RssParser {
 			item.source = RssSource.JACOBIN;
 			item.categories.push('Opinion');
 			item.link = item.content ? `/opinions/${item.id}` : (item.link as any).href;
+      if (!item.description) {
+        if (item.content) {
+          item.description = item.content.split('<h3>')[1]?.split('</h3>')[0] ?? '';
+        } else {
+          item.description = '';
+        }
+      }
 			const match = item.description.match(/[a-z]\.( |\"|\”|$)/);
 			if (match) {
 				item.description = item.description.split(match[0])[0] + match[0];

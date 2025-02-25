@@ -214,11 +214,12 @@
 			{#if !won && data.answer}
 				<p>the answer was "{data.answer}"</p>
 			{/if}
-			<button data-key="enter" class="restart selected" onclick={copyScore}>
+			<button class="restart selected" onclick={copyScore}>
 				{won ? 'You won :)' : `Game over :(`}
 				<br />
 				Share score?
 			</button>
+			<button data-key="enter" class="restart selected" formaction="?/restart"> Restart? </button>
 		{:else}
 			<div class="keyboard">
 				<button data-key="enter" onclick={checkwin} class:selected={submittable} disabled={!submittable}>enter</button>
