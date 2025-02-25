@@ -26,20 +26,28 @@
 	function toggleSidebar() {
 		isSidebarOpen = !isSidebarOpen;
 	}
+
+	function handleHeaderClick() {
+		if ($page.url.pathname === '/') {
+			window.location.reload();
+		} else {
+			window.location.href = '/';
+		}
+	}
 </script>
 
 <header>
 	<div class="corner">
-		<!-- <button class="menu-toggle" on:click={toggleSidebar}>
+		<button class="menu-toggle" on:click={toggleSidebar}>
 			{#if isSidebarOpen}
-				Close
+				✕
 			{:else}
-				Menu
+				☰
 			{/if}
-		</button> -->
+		</button>
 	</div>
 
-	<button on:click={toggleSidebar} class="menu-toggle">
+	<button on:click={handleHeaderClick} class="mobile-icon">
 		<img class="logo" src="/favicon.png" alt="2602news logo." />
 	</button>
 	<nav class:is-open={isSidebarOpen}>
@@ -75,6 +83,7 @@
 	.corner {
 		width: 3em;
 		height: 3em;
+		z-index: 1001;
 	}
 
 	.corner a {
@@ -115,6 +124,11 @@
 	}
 
 	.menu-toggle {
+		display: none;
+		z-index: 1001;
+	}
+
+	.mobile-icon {
 		display: none;
 	}
 
@@ -213,8 +227,18 @@
 		}
 		.menu-toggle {
 			display: block;
+			z-index: 1001;
+			background-color: transparent;
+			color: var(--color-theme-1);
+			border: none;
+			font-size: 24px;
+		}
+
+		.mobile-icon {
+			display: block;
 			z-index: 1000;
 			background-color: transparent;
+			color: var(--color-theme-1);
 			border: none;
 		}
 
