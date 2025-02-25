@@ -28,6 +28,7 @@
 	}
 
 	function handleHeaderClick() {
+		isSidebarOpen = false;
 		if ($page.url.pathname === '/') {
 			window.location.reload();
 		} else {
