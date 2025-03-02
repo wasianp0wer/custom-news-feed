@@ -32,8 +32,11 @@ export const load = (async ({ cookies }) => {
 					cache.set(CacheSource.OPINION, StoryUtil.sortMultipleSources(6, guardian, jacobin));
 				}
 			),
-			parser.parseUrl('https://theintercept.com/feed/').then((rss) => {
-				cache.set(CacheSource.INVESTIGATIVE, rss);
+			await Promise.all([
+				parser.parseUrl('https://theintercept.com/feed/'),
+				parser.parseUrl('https://www.propublica.org/feeds/propublica/main')
+			]).then(([intercept, propublica]) => {
+				cache.set(CacheSource.INVESTIGATIVE, StoryUtil.sortMultipleSources(0, intercept, propublica));
 			}),
 			parser.parseUrl('https://www.theguardian.com/us/lifeandstyle/rss').then((rss) => {
 				cache.set(CacheSource.STYLE, rss);
@@ -51,7 +54,7 @@ export const load = (async ({ cookies }) => {
 	const newsFeed = cache.get(CacheSource.NEWS);
 	const localFeed = cache.get(CacheSource.LOCAL);
 	const guardianOpinionFeed = cache.get(CacheSource.OPINION);
-	const propublicaFeed = cache.get(CacheSource.INVESTIGATIVE);
+	const investigative = cache.get(CacheSource.INVESTIGATIVE);
 	const cultureFeed = cache.get(CacheSource.POP_CULTURE);
 	const styleFeed = cache.get(CacheSource.STYLE);
 	const sportsFeed = cache.get(CacheSource.SPORTS);
@@ -59,7 +62,7 @@ export const load = (async ({ cookies }) => {
 		newsItems: newsFeed?.items ?? [],
 		localItems: localFeed?.items ?? [],
 		opinionItems: guardianOpinionFeed?.items ?? [],
-		investigativeItems: propublicaFeed?.items ?? [],
+		investigativeItems: investigative?.items ?? [],
 		popCultureItems: cultureFeed?.items ?? [],
 		styleItems: styleFeed?.items ?? [],
 		sportsItems: sportsFeed?.items ?? []

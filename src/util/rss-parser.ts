@@ -178,8 +178,22 @@ export class RssParser {
 	}
 
 	transformPropublica(xml: RssPage) {
+		xml.items = xml.items.slice(0, 3);
 		for (let item of xml.items) {
 			item.source = RssSource.PROPUBLICA;
+			const paragraphs = item.description.split(/<p[^>]*>/);
+			if (paragraphs.length > 4) {
+				item.description = paragraphs[4].split('</p>')[0];
+			} else {
+				item.description = paragraphs[1]?.split('</p>')[0] ?? 'Description not available.';
+			}
+			item.media_content = [
+				{
+					url: 'https://img.assets-c3.propublica.org/images/articles/20170509-reader-survey-1200x630.jpg?crop=focalpoint&fit=crop&fp-x=0.5&fp-y=0.5&h=630&imgixProfile=propublicaAssets&q=90&w=1200&s=3cf51a3596cf22b82ce6c231d0cfd728',
+					media_credit: '',
+					width: 0
+				}
+			];
 		}
 	}
 
@@ -214,13 +228,13 @@ export class RssParser {
 			item.source = RssSource.JACOBIN;
 			item.categories.push('Opinion');
 			item.link = item.content ? `/opinions/${item.id}` : (item.link as any).href;
-      if (!item.description) {
-        if (item.content) {
-          item.description = item.content.split('<h3>')[1]?.split('</h3>')[0] ?? '';
-        } else {
-          item.description = '';
-        }
-      }
+			if (!item.description) {
+				if (item.content) {
+					item.description = item.content.split('<h3>')[1]?.split('</h3>')[0] ?? '';
+				} else {
+					item.description = '';
+				}
+			}
 			const match = item.description.match(/[a-z]\.( |\"|\”|$)/);
 			if (match) {
 				item.description = item.description.split(match[0])[0] + match[0];

@@ -24,7 +24,6 @@
 	onMount(() => {
 		isOnMobile = window.innerWidth < 768;
 		window.addEventListener('resize', () => {
-			console.log(window.innerWidth);
 			isOnMobile = window.innerWidth < 768;
 		});
 	});
