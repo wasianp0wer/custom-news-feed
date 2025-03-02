@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import Story from '../components/Story.svelte';
 	import StoryColumn from '../components/StoryColumn.svelte';
 	import TopStory from '../components/TopStory.svelte';
@@ -10,6 +10,7 @@
 	import { get } from 'svelte/store';
 	import type { RssItem, RssPage } from '../util/rss-parser';
 	import { StoryUtil } from '../util/story.util';
+	import { invalidate, invalidateAll } from '$app/navigation';
 
 	interface Props {
 		data: PageData;
@@ -28,11 +29,25 @@
 		return `BREAKING: <a style="color: white; font-weight: normal;" href="${data.breakingNewsItem.link}">${data.breakingNewsItem.title}</a>`;
 	});
 
+	let interval: number;
+
 	onMount(() => {
 		isOnMobile = window.innerWidth < 768;
 		window.addEventListener('resize', () => {
 			isOnMobile = window.innerWidth < 768;
 		});
+		interval = setInterval(
+			() => {
+				if (!document.hidden) {
+					invalidateAll();
+				}
+			},
+			1000 * 60 * 5
+		);
+	});
+
+	onDestroy(() => {
+		clearInterval(interval);
 	});
 
 	let topCategory: string = $derived.by(() => {
@@ -62,7 +77,7 @@
 
 	let displayItems = $derived.by(() =>
 		StoryUtil.sortMultipleSources(
-			48,
+			12,
 			{ items: data.newsItems.slice(1).filter((item) => !item.categories.includes(topCategory)) } as RssPage,
 			{ items: investigationItems } as RssPage
 		).items.slice(0, layoutConfig.newStoryRows * 3 - 2 - (expandOpinion ? 1 : 0) + (3 - topStorySize))
