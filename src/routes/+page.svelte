@@ -21,6 +21,13 @@
 
 	let isOnMobile = $state(false);
 
+	let bannerText: string | undefined = $derived.by(() => {
+		if (!data.breakingNewsItem) {
+			return undefined;
+		}
+		return `BREAKING: <a style="color: white; font-weight: normal;" href="${data.breakingNewsItem.link}">${data.breakingNewsItem.title}</a>`;
+	});
+
 	onMount(() => {
 		isOnMobile = window.innerWidth < 768;
 		window.addEventListener('resize', () => {
@@ -92,44 +99,49 @@
 
 <div>
 	{#if !isOnMobile}
-		<div class="stories">
-			<TopStory item={topStory} nextThree={topThreeItemsAssociatedWithTopStory} {topStorySize} />
-			<StoryColumn items={opinionItems} align="right" title="Opinions" gridRow={1} link="/opinions" onExpand={onOpinionExpand} />
-			<StoryColumn items={latestItems} align="left" title="Latest" gridRow={2} includeExpand={false} />
-			{#each displayItems as item, index}
-				<Story {item} highlightTimeIfBreaking={index < 4} />
-			{/each}
-		</div>
-		<!-- <h1 class="section-divider"><a href="/investigations">Top Investigations</a> ➤</h1>
+		{#if bannerText}
+			<div class="banner">{@html bannerText}</div>
+		{/if}
+		<div class="non-mobile-body" style="margin-top: {bannerText ? '42' : '0'}px;">
+			<div class="stories">
+				<TopStory item={topStory} nextThree={topThreeItemsAssociatedWithTopStory} {topStorySize} />
+				<StoryColumn items={opinionItems} align="right" title="Opinions" gridRow={1} link="/opinions" onExpand={onOpinionExpand} />
+				<StoryColumn items={latestItems} align="left" title="Latest" gridRow={2} includeExpand={false} />
+				{#each displayItems as item, index}
+					<Story {item} highlightTimeIfBreaking={index < 4} />
+				{/each}
+			</div>
+			<!-- <h1 class="section-divider"><a href="/investigations">Top Investigations</a> ➤</h1>
 		<div class="stories">
 			{#each investigationItems as item, index}
 				<Story {item} highlightTimeIfBreaking={true} />
 			{/each}
 		</div> -->
-		<h1 class="section-divider"><a href="/local">Local</a> ➤</h1>
-		<div class="stories">
-			{#each localItems as item, index}
-				<Story {item} highlightTimeIfBreaking={index < 3} />
-			{/each}
-		</div>
-		<h1 class="section-divider"><a href="/style">Style</a> ➤</h1>
-		<div class="stories">
-			{#each styleItems as item, index}
-				<Story {item} />
-			{/each}
-		</div>
-		<h1 class="section-divider"><a href="/sports">Sports</a> ➤</h1>
-		<div class="stories">
-			<!-- TODO: This can easily get clogged up by a big sports event, but it doesn't have categories. Chat GPT? -->
-			{#each sportsItems as item, index}
-				<Story {item} highlightTimeIfBreaking={index < 3} />
-			{/each}
-		</div>
-		<h1 class="section-divider"><a href="/entertainment">Culture</a> ➤</h1>
-		<div class="stories">
-			{#each cultureItems as item, index}
-				<Story {item} highlightTimeIfBreaking={index < 3} />
-			{/each}
+			<h1 class="section-divider"><a href="/local">Local</a> ➤</h1>
+			<div class="stories">
+				{#each localItems as item, index}
+					<Story {item} highlightTimeIfBreaking={index < 3} />
+				{/each}
+			</div>
+			<h1 class="section-divider"><a href="/style">Style</a> ➤</h1>
+			<div class="stories">
+				{#each styleItems as item, index}
+					<Story {item} />
+				{/each}
+			</div>
+			<h1 class="section-divider"><a href="/sports">Sports</a> ➤</h1>
+			<div class="stories">
+				<!-- TODO: This can easily get clogged up by a big sports event, but it doesn't have categories. Chat GPT? -->
+				{#each sportsItems as item, index}
+					<Story {item} highlightTimeIfBreaking={index < 3} />
+				{/each}
+			</div>
+			<h1 class="section-divider"><a href="/entertainment">Culture</a> ➤</h1>
+			<div class="stories">
+				{#each cultureItems as item, index}
+					<Story {item} highlightTimeIfBreaking={index < 3} />
+				{/each}
+			</div>
 		</div>
 	{:else}
 		<div class="stories-mobile">
@@ -182,6 +194,18 @@
 </svelte:head>
 
 <style>
+	.banner {
+		background-color: red;
+		color: white;
+		text-align: center;
+		padding: 10px;
+		position: absolute;
+		top: 64px;
+		left: 0;
+		width: 100%;
+		z-index: 0;
+	}
+	/* Adjust the top margin of the main content to avoid overlap with the banner */
 	h1 a {
 		color: var(--color-theme-1);
 		font-weight: normal;
