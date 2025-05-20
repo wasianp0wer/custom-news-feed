@@ -58,7 +58,7 @@
 	});
 
 	let topThreeItemsAssociatedWithTopStory = $derived.by(() => {
-		return data.newsItems.filter((item) => item.categories.includes(topCategory)).slice(1, 4);
+		return data.newsItems.slice(0, 20).filter((item) => item.categories.includes(topCategory)).slice(1, 4);
 	});
 
 	let topStorySize = $derived.by(() => {

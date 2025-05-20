@@ -1,6 +1,7 @@
 import { XMLParser } from 'fast-xml-parser';
 import { v4 as uuidv4 } from 'uuid';
 import { StoryUtil } from './story.util';
+import { BasicCategories } from '../common/basic-cats';
 
 export class RssParser {
 	xmlOptions = {
@@ -64,6 +65,7 @@ export class RssParser {
 	transformToConsistentFormat(xml: any) {
 		switch (xml.title) {
 			case 'The Guardian':
+			case 'US news | The Guardian':
 			case 'Culture | The Guardian':
 			case 'Lifestyle | The Guardian':
 				this.transformGuardianXml(xml);
@@ -119,6 +121,10 @@ export class RssParser {
 			if (!((item.pubDate as any) instanceof Date)) {
 				item.pubDate = new Date(item.pubDate);
 			}
+			if (!item.categories) {
+				item.categories = [];
+			}
+			item.categories = item.categories.filter((c: string) => !BasicCategories.includes(c));
 		}
 	}
 
