@@ -24,7 +24,7 @@ export class RssParser {
 		this.xmlParser = new XMLParser(this.xmlOptions);
 	}
 
-	parse(rawXml: string): RssPage {
+	async parse(rawXml: string): Promise<RssPage> {
 		const baseXml = this.xmlParser.parse(rawXml);
 		if (!baseXml.rss) {
 			baseXml.rss = {
@@ -33,14 +33,14 @@ export class RssParser {
 		}
 		const xml = baseXml.rss.channel;
 		this.checkArrayFields(xml);
-		this.transformToConsistentFormat(xml);
+		await this.transformToConsistentFormat(xml);
 		this.validate(xml);
 		return xml;
 	}
 
 	async parseUrl(url: string) {
 		const rawXml = await (await fetch(url)).text();
-		return this.parse(rawXml);
+		return await this.parse(rawXml);
 	}
 
 	checkArrayFields(xml: RssPage) {
@@ -62,7 +62,7 @@ export class RssParser {
 		}
 	}
 
-	transformToConsistentFormat(xml: any) {
+	async transformToConsistentFormat(xml: any) {
 		switch (xml.title) {
 			case 'The Guardian':
 			case 'US news | The Guardian':
@@ -81,7 +81,7 @@ export class RssParser {
 				this.transformArlFfxNow(xml, xml.title);
 				break;
 			case 'ProPublica':
-				this.transformPropublica(xml);
+				await this.transformPropublica(xml);
 				break;
 			case 'The Intercept':
 				this.transformTheIntercept(xml);
@@ -183,8 +183,8 @@ export class RssParser {
 		}
 	}
 
-	transformPropublica(xml: RssPage) {
-		xml.items = xml.items.slice(0, 3);
+	async transformPropublica(xml: RssPage) {
+		xml.items = xml.items.filter(i => !i.title.includes('ProPublica')).slice(0, 3);
 		for (let item of xml.items) {
 			item.source = RssSource.PROPUBLICA;
 			const paragraphs = item.description.split(/<p[^>]*>/);
@@ -193,13 +193,27 @@ export class RssParser {
 			} else {
 				item.description = paragraphs[1]?.split('</p>')[0] ?? 'Description not available.';
 			}
-			item.media_content = [
-				{
-					url: 'https://img.assets-c3.propublica.org/images/articles/20170509-reader-survey-1200x630.jpg?crop=focalpoint&fit=crop&fp-x=0.5&fp-y=0.5&h=630&imgixProfile=propublicaAssets&q=90&w=1200&s=3cf51a3596cf22b82ce6c231d0cfd728',
+			const response = await fetch(item.link);
+			const html = await response.text();
+			const imgMatches = [...html.matchAll(/<img[^>]+src="([^">]+)"/g)].map(m => m[1].split('?')[0]).filter((m) => m.startsWith('http') && !m.includes('assets-c3.propublica.org'));
+						
+			console.log(imgMatches);
+			if (imgMatches.length > 0) {
+				item.media_content = [{
+					url: imgMatches[0],
 					media_credit: '',
 					width: 0
-				}
-			];
+				}];
+			} else {
+				item.media_content = [
+					{
+						url: 'https://img.assets-c3.propublica.org/images/articles/20170509-reader-survey-1200x630.jpg?crop=focalpoint&fit=crop&fp-x=0.5&fp-y=0.5&h=630&imgixProfile=propublicaAssets&q=90&w=1200&s=3cf51a3596cf22b82ce6c231d0cfd728',
+						media_credit: '',
+						width: 0
+					}
+				];
+
+			}
 		}
 	}
 

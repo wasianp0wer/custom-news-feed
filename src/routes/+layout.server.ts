@@ -15,7 +15,7 @@ export const load = (async ({ cookies }) => {
 		const parser = new RssParser();
 		await Promise.all([
 			await Promise.all([
-				parser.parseUrl('https://www.theguardian.com/us-news/rss'),
+				parser.parseUrl('https://www.theguardian.com/us/rss'),
 				parser.parseUrl('https://51st.news/rss/'),
 				parser.parseUrl('https://www.arlnow.com/feed/'),
 				parser.parseUrl('https://www.ffxnow.com/feed/')
