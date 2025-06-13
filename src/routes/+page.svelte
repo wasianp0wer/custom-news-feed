@@ -11,6 +11,7 @@
 	import type { RssItem, RssPage } from '../util/rss-parser';
 	import { StoryUtil } from '../util/story.util';
 	import { invalidate, invalidateAll } from '$app/navigation';
+	import { BasicCategories } from '../common/basic-cats';
 
 	interface Props {
 		data: PageData;
@@ -62,13 +63,18 @@
 	});
 
 	let topStorySize = $derived.by(() => {
+		var score = 0;
 		if (topThreeItemsAssociatedWithTopStory.length === 3) {
-			return 3;
+			score = 3;
 		} else if (topThreeItemsAssociatedWithTopStory.length === 0) {
-			return 1;
+			score = 1;
 		} else {
-			return 2;
+			score = 2;
 		}
+		if (BasicCategories.includes(topCategory)) {
+			score = Math.max(score, 2);
+		}
+		return score;
 	});
 
 	let expandOpinion = $state(false);
