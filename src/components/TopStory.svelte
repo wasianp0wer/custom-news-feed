@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { BasicCategories } from '../common/basic-cats';
 	import type { RssItem } from '../util/rss-parser';
 	import { StoryUtil } from '../util/story.util';
 	import ByLine from './ByLine.svelte';
@@ -44,7 +45,9 @@
 	</div>
 {:else}
 	<div class="first story" style="grid-column: span {topStorySize};">
-		<div class="redlabel"><a class="redlabel-text" href="/category/{mainCategory}">{mainCategory}</a></div>
+		{#if !BasicCategories.includes(mainCategory)}
+			<div class="redlabel"><a class="redlabel-text" href="/category/{mainCategory}">{mainCategory}</a></div>
+		{/if}
 		<h1><a href={item.link} target={item.link.startsWith('/') ? undefined : '_blank'}>{item.title}</a></h1>
 		<ByLine creator={item.dc_creator} publishedAt={item.pubDate} showBreakingTime={true} />
 
