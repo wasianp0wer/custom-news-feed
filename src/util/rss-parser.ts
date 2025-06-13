@@ -124,7 +124,7 @@ export class RssParser {
 			if (!item.categories) {
 				item.categories = [];
 			}
-			item.categories = item.categories.filter((c: string) => !BasicCategories.includes(c));
+			item.categories = item.categories;
 		}
 	}
 
