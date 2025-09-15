@@ -138,7 +138,7 @@
 
 	.content img {
 		border-radius: 4px;
-		width: 50%;
+		max-width: 61.8%;
 	}
 
 	.description {
