@@ -57,8 +57,8 @@ export class RssParser {
 				if (!Array.isArray((item as any)[field])) {
 					(item as any)[field] = [(item as any)[field]];
 				}
-				item.id = StoryUtil.hashObject({ title: item.title });
 			}
+			item.id = StoryUtil.hashObject({ title: item.title });
 		}
 	}
 

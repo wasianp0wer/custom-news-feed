@@ -1,7 +1,10 @@
 import type { RssItem, RssPage } from './rss-parser';
 
 export class StoryUtil {
-	static byLinePrefix(byline: string) {
+	static byLinePrefix(byline: string | string[]) {
+		if (Array.isArray(byline)) {
+			byline = byline.join(', ');
+		}
 		const words = byline.toLowerCase().split(' ');
 		const pressAgencyWords = ['press', 'agence', 'agency', 'agencies', 'staff', 'editorial'];
 		if (words.find((word) => pressAgencyWords.includes(word))) {
