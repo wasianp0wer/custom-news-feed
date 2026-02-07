@@ -101,6 +101,9 @@ export class RssParser {
 			case 'CBSSports.com Headlines':
 				this.transformCBSSports(xml);
 				break;
+			case 'bellingcat':
+				this.transformBellingcat(xml);
+				break;
 		}
 	}
 
@@ -173,6 +176,21 @@ export class RssParser {
 		}
 	}
 
+	transformBellingcat(xml: RssPage) {
+		console.log(xml);
+		for (let item of xml.items) {
+			item.source = RssSource.BELLINGCAT;
+			item.content = (item as any).content_encoded;
+			const imgMatches = [...item.content.matchAll(/<img[^>]+src="([^">]+)"/g)].map(m => m[1]);
+			const imgUrl = imgMatches.length > 0 ? imgMatches[0] : 'https://upload.wikimedia.org/wikipedia/commons/0/0d/Bellingcat_logo.png';
+			item.media_content = [{
+				url: imgUrl,
+				media_credit: '',
+				width: 0
+			}];
+		}
+	}
+
 	transformVariety(xml: RssPage) {
 		for (let item of xml.items) {
 			item.source = RssSource.VARIETY;
@@ -197,7 +215,6 @@ export class RssParser {
 			const html = await response.text();
 			const imgMatches = [...html.matchAll(/<img[^>]+src="([^">]+)"/g)].map(m => m[1].split('?')[0]).filter((m) => m.startsWith('http') && !m.includes('assets-c3.propublica.org'));
 						
-			console.log(imgMatches);
 			if (imgMatches.length > 0) {
 				item.media_content = [{
 					url: imgMatches[0],
@@ -337,6 +354,7 @@ export enum RssSource {
 	PROPUBLICA = 'ProPublica',
 	THEINTERCEPT = 'The Intercept',
 	VARIETY = 'Variety',
+	BELLINGCAT = 'Bellingcat',
 	ARL_NOW = 'ARLnow',
 	FFX_NOW = 'FFXnow',
 	JACOBIN = 'Jacobin',

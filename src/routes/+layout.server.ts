@@ -34,9 +34,10 @@ export const load = (async ({ cookies }) => {
 			),
 			await Promise.all([
 				parser.parseUrl('https://theintercept.com/feed/'),
-				parser.parseUrl('https://www.propublica.org/feeds/propublica/main')
-			]).then(([intercept, propublica]) => {
-				cache.set(CacheSource.INVESTIGATIVE, StoryUtil.sortMultipleSources(0, intercept, propublica));
+				parser.parseUrl('https://www.propublica.org/feeds/propublica/main'),
+				parser.parseUrl('https://www.bellingcat.com/feed/')
+			]).then(([intercept, propublica, bellingcat]) => {
+				cache.set(CacheSource.INVESTIGATIVE, StoryUtil.sortMultipleSources(0, intercept, propublica, bellingcat));
 			}),
 			parser.parseUrl('https://www.theguardian.com/us/lifeandstyle/rss').then((rss) => {
 				cache.set(CacheSource.STYLE, rss);
