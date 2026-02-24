@@ -109,7 +109,6 @@ export class RssParser {
 
 	validate(xml: RssPage) {
 		for (let item of xml.items) {
-			item.description = item.description.trim();
 			if (
 				!(
 					item.description.endsWith('.') ||
@@ -180,13 +179,21 @@ export class RssParser {
 		for (let item of xml.items) {
 			item.source = RssSource.BELLINGCAT;
 			item.content = (item as any).content_encoded;
-			const imgMatches = [...item.content.matchAll(/<img[^>]+src="([^">]+)"/g)].map(m => m[1]);
-			const imgUrl = imgMatches.length > 0 ? imgMatches[0] : 'https://upload.wikimedia.org/wikipedia/commons/0/0d/Bellingcat_logo.png';
-			item.media_content = [{
-				url: imgUrl,
-				media_credit: '',
-				width: 0
-			}];
+			const imgMatches = [...item.content.matchAll(/<img[^>]+src="([^">]+)"/g)].map((m) => m[1]);
+			console.log(imgMatches);
+			let imgUrl = imgMatches.length > 1 ? imgMatches[1] : 'https://upload.wikimedia.org/wikipedia/commons/0/0d/Bellingcat_logo.png';
+			if (imgUrl.startsWith('\/')) {
+				imgUrl = 'https://www.bellingcat.com' + imgUrl;
+			}
+			item.media_content = [
+				{
+					url: imgUrl,
+					media_credit: '',
+					width: 1200
+				}
+			];
+			item.description = item.description.split('<p>')[1].split('</p>')[0];
+			item.description = item.description.replaceAll(/\.[^\.]*\[(&#8230;|…)\]/g, '.');
 		}
 	}
 
@@ -201,25 +208,24 @@ export class RssParser {
 	}
 
 	async transformPropublica(xml: RssPage) {
-		xml.items = xml.items.filter(i => !i.title.includes('ProPublica')).slice(0, 3);
+		xml.items = xml.items.filter((i) => !i.title.includes('ProPublica')).slice(0, 3);
 		for (let item of xml.items) {
 			item.source = RssSource.PROPUBLICA;
-			const paragraphs = item.description.split(/<p[^>]*>/);
-			if (paragraphs.length > 4) {
-				item.description = paragraphs[4].split('</p>')[0];
-			} else {
-				item.description = paragraphs[1]?.split('</p>')[0] ?? 'Description not available.';
-			}
+			item.description = item.description.split('<p>')[1].split('</p>')[0];
 			const response = await fetch(item.link);
 			const html = await response.text();
-			const imgMatches = [...html.matchAll(/<img[^>]+src="([^">]+)"/g)].map(m => m[1].split('?')[0]).filter((m) => m.startsWith('http') && !m.includes('assets-c3.propublica.org'));
-						
+			const imgMatches = [...html.matchAll(/<img[^>]+src="([^">]+)"/g)]
+				.map((m) => m[1].split('?')[0])
+				.filter((m) => m.startsWith('http') && !m.includes('assets-c3.propublica.org'));
+
 			if (imgMatches.length > 0) {
-				item.media_content = [{
-					url: imgMatches[0],
-					media_credit: '',
-					width: 0
-				}];
+				item.media_content = [
+					{
+						url: imgMatches[0],
+						media_credit: '',
+						width: 0
+					}
+				];
 			} else {
 				item.media_content = [
 					{
@@ -228,7 +234,6 @@ export class RssParser {
 						width: 0
 					}
 				];
-
 			}
 		}
 	}
