@@ -177,7 +177,6 @@ export class RssParser {
 	}
 
 	transformBellingcat(xml: RssPage) {
-		console.log(xml);
 		for (let item of xml.items) {
 			item.source = RssSource.BELLINGCAT;
 			item.content = (item as any).content_encoded;

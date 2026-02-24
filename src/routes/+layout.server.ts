@@ -4,8 +4,10 @@ import { XMLParser, XMLBuilder, XMLValidator } from 'fast-xml-parser';
 import { RssParser, type RssItem, type RssPage } from '../util/rss-parser';
 import { layoutConfig } from '../config/layout-config';
 import { StoryUtil } from '../util/story.util';
+import { ItnParser, type ItnItem } from '../util/itn-parser';
 
 const cache = new Map<string, RssPage>();
+const itnCache: ItnItem[] = [];
 let lastCacheUpdate: Date | undefined = undefined;
 
 export const load = (async ({ cookies }) => {
@@ -13,6 +15,7 @@ export const load = (async ({ cookies }) => {
 		lastCacheUpdate = new Date();
 		cache.clear();
 		const parser = new RssParser();
+		const itnParser = new ItnParser();
 		await Promise.all([
 			await Promise.all([
 				parser.parseUrl('https://www.theguardian.com/us-news/rss'),
@@ -49,6 +52,10 @@ export const load = (async ({ cookies }) => {
 			),
 			parser.parseUrl('https://www.cbssports.com/rss/headlines/').then((rss) => {
 				cache.set(CacheSource.SPORTS, rss);
+			}),
+			itnParser.fetchAndParseItn().then((itnItems) => {
+				itnCache.length = 0;
+				itnCache.push(...itnItems);
 			})
 		]);
 	}
@@ -66,7 +73,8 @@ export const load = (async ({ cookies }) => {
 		investigativeItems: investigative?.items ?? [],
 		popCultureItems: cultureFeed?.items ?? [],
 		styleItems: styleFeed?.items ?? [],
-		sportsItems: sportsFeed?.items ?? []
+		sportsItems: sportsFeed?.items ?? [],
+		itnItems: itnCache
 	};
 }) satisfies LayoutServerLoad;
 
@@ -77,5 +85,6 @@ enum CacheSource {
 	INVESTIGATIVE = 'investigative',
 	POP_CULTURE = 'popCulture',
 	STYLE = 'style',
-	SPORTS = 'sports'
+	SPORTS = 'sports',
+	ITN = 'itn'
 }

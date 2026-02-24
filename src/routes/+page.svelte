@@ -112,6 +112,7 @@
 	let styleItems = $derived.by(() => data.styleItems.slice(0, layoutConfig.styleRows * 3));
 	let sportsItems = $derived.by(() => data.sportsItems.slice(0, layoutConfig.sportsRows * 3));
 	let cultureItems = $derived.by(() => data.popCultureItems.slice(0, layoutConfig.cultureRows * 3));
+	let itnItems = $derived.by(() => data.itnItems);
 
 	function onOpinionExpand(expanded: boolean) {
 		expandOpinion = expanded;
@@ -122,6 +123,19 @@
 	{#if !isOnMobile}
 		{#if bannerText}
 			<div class="banner">{@html bannerText}</div>
+		{/if}
+		{#if itnItems.length > 0}
+			<div class="itn-banner">
+				<div class="itn-container">
+					<h2 class="itn-title">IN THE NEWS:</h2>
+					{#each itnItems as item}
+						<a href={item.link} class="itn-item">
+							{item.title}
+							<span class="itn-tooltip">{item.description}</span>
+						</a>
+					{/each}
+				</div>
+			</div>
 		{/if}
 		<div class="non-mobile-body" style="margin-top: {bannerText ? '42' : '0'}px;">
 			<div class="stories">
@@ -230,5 +244,76 @@
 	h1 a {
 		color: var(--color-theme-1);
 		font-weight: normal;
+	}
+	.itn-banner {
+		padding: 8px 20px;
+		margin-bottom: 15px;
+		text-align: center;
+		position: relative;
+		z-index: 10;
+	}
+	.itn-container {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.itn-title {
+		font-size: 14px;
+		font-weight: bold;
+		color: #666;
+		margin: 0;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		flex-shrink: 0;
+	}
+	.itn-item {
+		text-decoration: none;
+		color: var(--color-theme-1);
+		font-size: 14px;
+		font-weight: normal;
+		transition: opacity 0.2s;
+		position: relative;
+		display: inline-block;
+	}
+	.itn-item:hover {
+		opacity: 1;
+	}
+	.itn-tooltip {
+		visibility: hidden;
+		width: 250px;
+		background-color: #333;
+		color: white;
+		text-align: left;
+		padding: 8px;
+		border-radius: 4px;
+		position: absolute;
+		z-index: 10000;
+		top: 125%;
+		left: 50%;
+		margin-left: -125px;
+		opacity: 0;
+		transition: opacity 0.3s;
+		font-weight: normal;
+		font-size: 12px;
+		line-height: 1.4;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+		pointer-events: none;
+		white-space: normal;
+	}
+	.itn-tooltip::after {
+		content: '';
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		margin-left: -5px;
+		border-width: 5px;
+		border-style: solid;
+		border-color: transparent transparent #333 transparent;
+	}
+	.itn-item:hover .itn-tooltip {
+		visibility: visible;
+		opacity: 1;
 	}
 </style>

@@ -26,6 +26,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 					return !desc.includes('how to watch') && !desc.includes('where to watch');
 				})
 				.slice(0, layoutConfig.sportsRows * 3) ?? [],
-		breakingNewsItem: breakingItem
+		breakingNewsItem: breakingItem,
+		itnItems: parentData.itnItems ?? []
 	};
 };
