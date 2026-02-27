@@ -82,7 +82,17 @@ export class ItnParser {
 			bestTitle = bestTitle.substring(2).trim();
 		}
 
-		return bestTitle;
+		return this.capitalizeTitle(bestTitle);
+	}
+
+	private capitalizeTitle(title: string): string {
+		return title
+			.split(' ')
+			.map((word) => {
+				word = word.charAt(0).toUpperCase() + word.slice(1);
+				return word;
+			})
+			.join(' ');
 	}
 }
 

@@ -180,7 +180,6 @@ export class RssParser {
 			item.source = RssSource.BELLINGCAT;
 			item.content = (item as any).content_encoded;
 			const imgMatches = [...item.content.matchAll(/<img[^>]+src="([^">]+)"/g)].map((m) => m[1]);
-			console.log(imgMatches);
 			let imgUrl = imgMatches.length > 1 ? imgMatches[1] : 'https://upload.wikimedia.org/wikipedia/commons/0/0d/Bellingcat_logo.png';
 			if (imgUrl.startsWith('\/')) {
 				imgUrl = 'https://www.bellingcat.com' + imgUrl;
