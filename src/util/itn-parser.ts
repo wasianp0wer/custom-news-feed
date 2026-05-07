@@ -44,7 +44,10 @@ export class ItnParser {
 				const text = doc(el).text().trim();
 				const firstLetter = text.charAt(0);
 				return (
-					(firstLetter && firstLetter === firstLetter.toUpperCase()) || text.toLowerCase().startsWith('the ') || text.toLowerCase().startsWith('a ')
+					(firstLetter && firstLetter === firstLetter.toUpperCase()) ||
+					text.toLowerCase().startsWith('the ') ||
+					text.toLowerCase().startsWith('a ') ||
+					text.toLowerCase().startsWith('an ')
 				);
 			})
 		)
@@ -80,6 +83,8 @@ export class ItnParser {
 			bestTitle = bestTitle.substring(4).trim();
 		} else if (bestTitle.toLowerCase().startsWith('a ')) {
 			bestTitle = bestTitle.substring(2).trim();
+		} else if (bestTitle.toLowerCase().startsWith('an ')) {
+			bestTitle = bestTitle.substring(3).trim();
 		}
 
 		return this.capitalizeTitle(bestTitle);
