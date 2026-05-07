@@ -15,7 +15,8 @@ export class RssParser {
 				return 'categories';
 			}
 			return tagName.replace(/:/g, '_');
-		}
+		},
+		stopNodes: ['*.content'] // stop parsing ANY <content> tag
 	};
 	xmlParser: XMLParser;
 	itemArrayFields = ['media_content', 'categories'];
@@ -25,17 +26,27 @@ export class RssParser {
 	}
 
 	async parse(rawXml: string): Promise<RssPage> {
-		const baseXml = this.xmlParser.parse(rawXml);
-		if (!baseXml.rss) {
-			baseXml.rss = {
-				channel: baseXml.feed
+		try {
+			const baseXml = this.xmlParser.parse(rawXml);
+			if (!baseXml.rss) {
+				baseXml.rss = {
+					channel: baseXml.feed
+				};
+			}
+			const xml = baseXml.rss.channel;
+			this.checkArrayFields(xml);
+			await this.transformToConsistentFormat(xml);
+			this.validate(xml);
+			return xml;
+		} catch (e) {
+			console.error('Error parsing RSS feed:', e);
+			return {
+				title: '',
+				description: '',
+				link: '',
+				items: []
 			};
 		}
-		const xml = baseXml.rss.channel;
-		this.checkArrayFields(xml);
-		await this.transformToConsistentFormat(xml);
-		this.validate(xml);
-		return xml;
 	}
 
 	async parseUrl(url: string) {
@@ -58,7 +69,7 @@ export class RssParser {
 					(item as any)[field] = [(item as any)[field]];
 				}
 			}
-			item.id = StoryUtil.hashObject({ title: item.title });
+			item._id = StoryUtil.hashObject({ title: item.title });
 		}
 	}
 
@@ -263,11 +274,21 @@ export class RssParser {
 			item.content = ((item as any).content ?? {})['#text'] ?? '';
 			const matches = item.content.matchAll(this.jacobinImageRegex);
 			item.media_content = Array.from(matches, (match) => ({ url: match[1], media_credit: '', width: 0 }));
+			if (item.media_content.length === 0) {
+				item.media_content = [
+					{
+						url: 'https://jacobin.com/static/img/logo/logo-type.png',
+						media_credit: '',
+						width: 1200
+					}
+				];
+			}
 			item.pubDate = new Date((item as any).published);
 			item.title = (item as any).title['#text'];
 			item.source = RssSource.JACOBIN;
+			item.categories = item.categories.map((c) => (c as any).label);
 			item.categories.push('Opinion');
-			item.link = item.content ? `/opinions/${item.id}` : (item.link as any).href;
+			item.link = (item as any).id;
 			if (!item.description) {
 				if (item.content) {
 					item.description = item.content.split('<h3>')[1]?.split('</h3>')[0] ?? '';
@@ -332,7 +353,7 @@ export interface RssPage {
 }
 
 export interface RssItem {
-	id: string;
+	_id: string;
 	title: string;
 	description: string;
 	link: string;

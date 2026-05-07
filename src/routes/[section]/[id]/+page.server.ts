@@ -30,5 +30,5 @@ function extractStory(parentData: PageData, section: string, id: string): RssIte
 	} else if (section === 'sports') {
 		data = parentData.sportsItems;
 	}
-	return data.find((item) => item.id === id);
+	return data.find((item) => item._id === id);
 }
