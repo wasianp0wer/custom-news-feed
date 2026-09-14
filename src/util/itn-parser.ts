@@ -23,7 +23,7 @@ export class ItnParser {
 				.text()
 				.trim()
 				.replaceAll(/\s*\(.*pictured.*\)/g, '');
-			const link = doc(element).find('a').first().attr('href');
+			const link = doc(element).find('b').first().find('a').first().attr('href');
 			const fullLink = link;
 			const pubDate = new Date().toISOString();
 
@@ -47,7 +47,8 @@ export class ItnParser {
 					(firstLetter && firstLetter === firstLetter.toUpperCase()) ||
 					text.toLowerCase().startsWith('the ') ||
 					text.toLowerCase().startsWith('a ') ||
-					text.toLowerCase().startsWith('an ')
+					text.toLowerCase().startsWith('an ') ||
+					text.toLowerCase().startsWith('in ')
 				);
 			})
 		)
@@ -84,6 +85,8 @@ export class ItnParser {
 		} else if (bestTitle.toLowerCase().startsWith('a ')) {
 			bestTitle = bestTitle.substring(2).trim();
 		} else if (bestTitle.toLowerCase().startsWith('an ')) {
+			bestTitle = bestTitle.substring(3).trim();
+		} else if (bestTitle.toLowerCase().startsWith('in ')) {
 			bestTitle = bestTitle.substring(3).trim();
 		}
 
