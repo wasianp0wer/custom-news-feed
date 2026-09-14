@@ -231,7 +231,7 @@ export class RssParser {
 			if (imgMatches.length > 0) {
 				item.media_content = [
 					{
-						url: imgMatches[0],
+						url: imgMatches.at(3) ?? imgMatches.at(0)!,
 						media_credit: '',
 						width: 0
 					}

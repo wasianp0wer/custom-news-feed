@@ -24,7 +24,7 @@ export class ItnParser {
 				.trim()
 				.replaceAll(/\s*\(.*pictured.*\)/g, '');
 			const link = doc(element).find('a').first().attr('href');
-			const fullLink = link ? `https://en.wikipedia.org${link}` : undefined;
+			const fullLink = link;
 			const pubDate = new Date().toISOString();
 
 			items.push({ title, description, link: fullLink, pubDate });
